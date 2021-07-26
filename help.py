@@ -163,5 +163,9 @@ class Cog(commands.Cog):
             help.set_footer(text='Syntax: <required> [infinite list of numbers...] |optional|')
             await ctx.reply(embed=help)
 
+    @commands.command()
+    async def testing(self, ctx):
+        await ctx.send('Testing worked.')
+
 def setup(bot):
     bot.add_cog(Cog(bot))
