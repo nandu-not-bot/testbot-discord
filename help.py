@@ -165,7 +165,7 @@ class Cog(commands.Cog):
 
     @commands.command()
     async def testing(self, ctx):
-        await ctx.send('Testing worked.')
+        await ctx.send('Testing actually worked.')
 
 def setup(bot):
     bot.add_cog(Cog(bot))
