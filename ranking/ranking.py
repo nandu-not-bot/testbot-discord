@@ -59,7 +59,7 @@ class Cog(commands.Cog):
         with open(self.file, 'w') as f:
             json.dump(data, f)
 
-        self.push(self.file, 'Json Updated.', self.data, 'main', update=True)
+        await self.push(self.file, 'Json Updated.', self.data, 'main', update=True)
         print(data)
 
 
