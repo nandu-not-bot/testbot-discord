@@ -24,6 +24,7 @@ class Cog(commands.Cog):
                     'name' : author.name,
                     'score' : 0
                 }
+
         elif guild not in data:
             data[guild] = {
                 str(author.id) : {
