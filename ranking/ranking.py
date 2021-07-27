@@ -11,6 +11,10 @@ class Cog(commands.Cog):
     async def on_message(self, message):
         guild = str(message.guild.id)
         author = message.author
+
+        if message.author.bot:
+            return
+
         with open(self.file, 'r') as f:
             data = json.load(f)
         
