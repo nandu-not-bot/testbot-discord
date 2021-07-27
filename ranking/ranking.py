@@ -13,16 +13,16 @@ class Cog(commands.Cog):
         self.repo_file = self.repo.get_contents(self.file, ref='main')
         self.data = self.repo_file.decoded_content.decode('utf-8')
 
-    async def push(self, path, message, content, branch, update=False):
+    def push(self, path, message, content, branch, update=False):
         author = InputGitAuthor('nandoooseee', 'nandagopalnmenon@gmail.com')
-        source = await self.repo.get_branch('main')
+        source = self.repo.get_branch('main')
 
-        await self.repo.create_git_ref(ref=f"refs/heads/{branch}", sha=source.commit.sha)
+        self.repo.create_git_ref(ref=f"refs/heads/{branch}", sha=source.commit.sha)
         if update:
-            contents = await self.repo.get_contents(path, ref=branch)
-            await self.repo.update_file(contents.path, message, content, contents.sha, branch=branch, author=author)
+            contents = self.repo.get_contents(path, ref=branch)
+            self.repo.update_file(contents.path, message, content, contents.sha, branch=branch, author=author)
         else:
-            await self.repo.create_file(path, message, content, branch=branch, author=author)
+            self.repo.create_file(path, message, content, branch=branch, author=author)
 
     @commands.Cog.listener()
     @commands.guild_only()
