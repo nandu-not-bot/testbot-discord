@@ -8,7 +8,7 @@ class Cog(commands.Cog):
         self.file = 'ranking/rankings.json'
 
         self.g = Github('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')
-        self.repo = self.g.get_self.repo('nanduuuseee/testbot-discord')
+        self.repo = self.g.get_repo('nanduuuseee/testbot-discord')
 
         self.repo_file = self.repo.get_contents(self.file, ref='main')
         self.data = self.repo_file.decoded_content.decode('utf-8')
