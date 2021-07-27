@@ -13,7 +13,6 @@ class Cog(commands.Cog):
 
         file = repo.get_contents(self.file, ref='main')
         data = file.decoded_content.decode('utf-8')
-        data += '\npytest==5.3.2'
 
         def push(path, message, content, branch, update=False):
             author = InputGitAuthor('nandoooseee', 'nandagopalnmenon@gmail.com')
