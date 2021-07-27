@@ -1,10 +1,32 @@
 from discord.ext import commands
 import json
+from github import Github, InputGitAuthor
 
 class Cog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.file = 'ranking/rankings.json'
+
+    def update_file(self):
+        g = Github('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')
+        repo = g.get_repo('nanduuuseee/testbot-discord')
+
+        file = repo.get_contents(self.file, ref='main')
+        data = file.decoded_content.decode('utf-8')
+        data += '\npytest==5.3.2'
+
+        def push(path, message, content, branch, update=False):
+            author = InputGitAuthor('nandoooseee', 'nandagopalnmenon@gmail.com')
+
+            source = repo.get_branch('main')
+            repo.create_git_ref(ref=f"refs/heads/{branch}", sha=source.commit.sha)
+            if update:
+                contents = repo.get_contents(path, ref=branch)
+                repo.update_file(contents.path, message, content, contents.sha, branch=branch, author=author)
+            else:
+                repo.create_file(path, message, content, branch=branch, author=author)
+
+        push(self.file, 'Json Updated.', data, 'main', update=True)
 
     @commands.Cog.listener()
     @commands.guild_only()
@@ -39,6 +61,7 @@ class Cog(commands.Cog):
         with open(self.file, 'w') as f:
             json.dump(data, f)
 
+        self.update_file()
         print(data)
 
 
