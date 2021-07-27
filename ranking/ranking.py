@@ -15,7 +15,7 @@ class Cog(commands.Cog):
             data = json.load(f)
         
         if guild in data:
-            await message.send('Server already registered.')
+            await message.channel.send('Server already registered.')
             if str(author.id) in data[guild]:
                 data[guild][str(author.id)]['name'] = author.name
                 data[guild][str(author.id)]['score'] += 1
