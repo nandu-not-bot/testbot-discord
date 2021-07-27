@@ -8,14 +8,14 @@ class Cog(commands.Cog):
 
     @commands.Cog.listener()
     @commands.guild_only()
-    async def on_message(self, ctx):
-        guild = str(ctx.guild.id)
-        author = ctx.author
+    async def on_message(self, message):
+        guild = str(message.guild.id)
+        author = message.author
         with open(self.file, 'r') as f:
             data = json.load(f)
         
         if guild in data:
-            await ctx.send('Server already registered.')
+            await message.send('Server already registered.')
             if str(author.id) in data[guild]:
                 data[guild][str(author.id)]['name'] = author.name
                 data[guild][str(author.id)]['score'] += 1
