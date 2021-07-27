@@ -34,7 +34,7 @@ class Cog(commands.Cog):
             }
 
         with open(self.file, 'w') as f:
-            json.dumps(data, f)
+            json.dump(data, f)
 
         print(data)
 
