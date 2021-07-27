@@ -17,7 +17,7 @@ class Cog(commands.Cog):
         author = InputGitAuthor('nandoooseee', 'nandagopalnmenon@gmail.com')
 
         source = self.repo.get_branch('main')
-        self.repo.create_git_ref(ref=f"refs/heads/{branch}", sha=source.commit.sha)
+        # self.repo.create_git_ref(ref=f"refs/heads/{branch}", sha=source.commit.sha)
         if update:
             contents = self.repo.get_contents(path, ref=branch)
             self.repo.update_file(contents.path, message, content, contents.sha, branch=branch, author=author)
