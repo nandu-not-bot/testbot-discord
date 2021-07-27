@@ -2,12 +2,10 @@ from discord.ext import commands
 import json
 from github import Github, InputGitAuthor
 
-
-
 class Cog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.file = 'ranking/rankings.json'
+        self.file = '/ranking/rankings.json'
 
         self.g = Github('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')
         self.repo = self.g.get_repo('nanduuuseee/testbot-discord')
@@ -55,6 +53,8 @@ class Cog(commands.Cog):
                     'score' : 0
                 }
             }
+
+        
 
         with open(self.file, 'w') as f:
             json.dump(data, f)
