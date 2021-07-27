@@ -7,25 +7,24 @@ class Cog(commands.Cog):
         self.bot = bot
         self.file = 'ranking/rankings.json'
 
-    def update_file(self):
-        g = Github('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')
-        repo = g.get_repo('nanduuuseee/testbot-discord')
+        self.g = Github('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')
+        self.repo = self.g.get_self.repo('nanduuuseee/testbot-discord')
 
-        file = repo.get_contents(self.file, ref='main')
-        data = file.decoded_content.decode('utf-8')
+        self.repo_file = self.repo.get_contents(self.file, ref='main')
+        self.data = self.repo_file.decoded_content.decode('utf-8')
 
-        def push(path, message, content, branch, update=False):
-            author = InputGitAuthor('nandoooseee', 'nandagopalnmenon@gmail.com')
+    def push(self, path, message, content, branch, update=False):
+        author = InputGitAuthor('nandoooseee', 'nandagopalnmenon@gmail.com')
 
-            source = repo.get_branch('main')
-            repo.create_git_ref(ref=f"refs/heads/{branch}", sha=source.commit.sha)
-            if update:
-                contents = repo.get_contents(path, ref=branch)
-                repo.update_file(contents.path, message, content, contents.sha, branch=branch, author=author)
-            else:
-                repo.create_file(path, message, content, branch=branch, author=author)
+        source = self.repo.get_branch('main')
+        self.repo.create_git_ref(ref=f"refs/heads/{branch}", sha=source.commit.sha)
+        if update:
+            contents = self.repo.get_contents(path, ref=branch)
+            self.repo.update_file(contents.path, message, content, contents.sha, branch=branch, author=author)
+        else:
+            self.repo.create_file(path, message, content, branch=branch, author=author)
 
-        push(self.file, 'Json Updated.', data, 'main', update=True)
+    # push(self.file, 'Json Updated.', data, 'main', update=True)
 
     @commands.Cog.listener()
     @commands.guild_only()
@@ -60,7 +59,7 @@ class Cog(commands.Cog):
         with open(self.file, 'w') as f:
             json.dump(data, f)
 
-        self.update_file()
+        self.push(self.file, 'Json Updated.', self.data, 'main', update=True)
         print(data)
 
 
