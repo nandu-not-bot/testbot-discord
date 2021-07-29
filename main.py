@@ -1,6 +1,10 @@
 import discord
 from discord.ext import commands
-import time
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 def get_prefix(bot, message):
     prefixes = ['do ', '?', '.']
@@ -30,5 +34,5 @@ async def on_ready():
     await bot.change_presence(activity=discord.Game(name='My Bot', type=1, url=''))
     print('Successfully logged in and booted...')
 
-bot.run('ODU4NjM1ODY0NzcwMDg0ODg1.YNhA9g.kJxYbLg52yLPHYlI90Qxzx9WXKQ',
+bot.run(os.environ.get('TOKEN'),
         bot=True, reconnect=True)
