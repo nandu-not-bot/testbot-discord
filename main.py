@@ -20,7 +20,6 @@ intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=get_prefix,
                    description="Just Chillin'!", intents=intents)
-bot.remove_command('help')
 
 if __name__ == "__main__":
     for extension in initial_extensions:
