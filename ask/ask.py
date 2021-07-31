@@ -18,27 +18,27 @@ class Quoted:
         self.size = size
         self.color = color
 
-alex_ham = Quoted('Alexander Hamilton', 'eightBall/Images/alexander_hamilton.png', 50, 100, 65, BLACK)
-chinese_emp = Quoted('Random Chinese Emporer', 'eightBall/Images/constantine.png', 75, 100, 75, BLACK)
-disney = Quoted('Walt Disney', 'eightBall/Images/disney.png', 20, 250, 40, BLACK)
-dumbledore = Quoted('Albus Dumbledore', 'eightBall/Images/dumbledore.png', 400, 50, 50, WHITE)
-edison = Quoted('Thomas Edison', 'eightBall/Images/edison.png', 40, 50, 50, BLACK)
-einstien = Quoted('Albert Einstien', 'eightBall/Images/einstien.png', 300, 100, 50, WHITE)
-hitler = Quoted('Adolf Hitler', 'eightBall/Images/hitler.png', 50, 50, 60, BLACK)
-oogway = Quoted('Master Ooogway', 'eightBall/Images/oogway.png', 350, 25, 40, BLACK)
-sachin = Quoted('Sachin Tendulkar', 'eightBall/Images/sachin.png', 200, 25, 40, BLACK)
-trump = Quoted('Donald Trump', 'eightBall/Images/trump.png', 350, 25, 40, BLACK)
+alex_ham = Quoted('Alexander Hamilton', 'ask/Images/alexander_hamilton.png', 50, 100, 65, BLACK)
+chinese_emp = Quoted('Random Chinese Emporer', 'ask/Images/constantine.png', 75, 100, 75, BLACK)
+disney = Quoted('Walt Disney', 'ask/Images/disney.png', 20, 250, 40, BLACK)
+dumbledore = Quoted('Albus Dumbledore', 'ask/Images/dumbledore.png', 400, 50, 50, WHITE)
+edison = Quoted('Thomas Edison', 'ask/Images/edison.png', 40, 50, 50, BLACK)
+einstien = Quoted('Albert Einstien', 'ask/Images/einstien.png', 300, 100, 50, WHITE)
+hitler = Quoted('Adolf Hitler', 'ask/Images/hitler.png', 50, 50, 60, BLACK)
+oogway = Quoted('Master Ooogway', 'ask/Images/oogway.png', 350, 25, 40, BLACK)
+sachin = Quoted('Sachin Tendulkar', 'ask/Images/sachin.png', 200, 25, 40, BLACK)
+trump = Quoted('Donald Trump', 'ask/Images/trump.png', 350, 25, 40, BLACK)
 
 people = [trump, alex_ham, chinese_emp, disney, dumbledore, edison, einstien, hitler, oogway, sachin]
 
-class EightballCog(commands.Cog):
+class askCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.responses = self.get_data()['responses']
         self.fonts = self.get_data()['fonts']
 
     def get_data(self):
-        with open('eightBall/8ball.json', 'r') as f:
+        with open('ask/ask.json', 'r') as f:
             data = json.load(f)
         return data
 
@@ -69,4 +69,4 @@ class EightballCog(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(EightballCog(bot))
+    bot.add_cog(askCog(bot))

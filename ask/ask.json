@@ -14,7 +14,7 @@
         "unlock the \nanswer for \n$1.99 only"
     ],
     "fonts": [
-        "eightBall/Fonts/AlexBrush-Regular.ttf",
-        "eightBall/Fonts/Dindalove.ttf"
+        "ask/Fonts/AlexBrush-Regular.ttf",
+        "ask/Fonts/Dindalove.ttf"
     ]
 }
