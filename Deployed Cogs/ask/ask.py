@@ -8,7 +8,6 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 PURPLE = 0x510490
 
-
 class Quoted:
     def __init__(self, name, file, x, y, size, color):
         self.name = name 

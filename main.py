@@ -1,3 +1,4 @@
+# import all necessary libraries
 import discord
 from discord.ext import commands
 import os
@@ -5,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
+# Get Prefix for bot
 def get_prefix(bot, message):
     prefixes = ['do ', '?', '.']
 
@@ -14,17 +15,19 @@ def get_prefix(bot, message):
 
     return commands.when_mentioned_or(*prefixes)(bot, message)
 
-
-initial_extensions = ['ask.ask']
+# Define all the cogs and intents
+initial_extensions = ['ttt.main']
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=get_prefix,
                    description="Just Chillin'!", intents=intents)
 
+# Initalize cogs
 if __name__ == "__main__":
     for extension in initial_extensions:
         bot.load_extension(extension)
 
+# Print message when bot loads
 @bot.event
 async def on_ready():
     print(
@@ -33,5 +36,5 @@ async def on_ready():
     await bot.change_presence(activity=discord.Game(name='My Bot', type=1, url=''))
     print('Successfully logged in and booted...')
 
-bot.run(os.environ.get('TOKEN'),
-        bot=True, reconnect=True)
+# Run Bot
+bot.run(os.environ.get('TOKEN'), bot=True, reconnect=True)
