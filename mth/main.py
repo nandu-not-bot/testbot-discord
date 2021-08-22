@@ -72,6 +72,10 @@ class Cog(commands.Cog):
         await ctx.send(f'{show} = {result}' if result is not None else show)
 
     # Statistical Measures of Central Tendancies
+    async def convert_list(self, input_list: list, ctx: Context):
+        channel = self.bot.get_channel(ctx.channel.id)
+        
+        await channel.send('tested')
 
     @commands.command()
     async def mean(self, ctx: Context, *nums):
@@ -119,6 +123,15 @@ class Cog(commands.Cog):
         mode = statistics.mode(nums)
 
         await ctx.send(f'The mode of the list `{nums}` is `{mode}` occuring `{nums.count(mode)}` number of times.')
+
+    @commands.command()
+    async def test(self, ctx: Context):
+    
+        '''test'''
+    
+        self.convert_list([], ctx)
+    
+
 
 def setup(bot):
     bot.add_cog(Cog(bot))
