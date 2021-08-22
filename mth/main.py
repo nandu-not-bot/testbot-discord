@@ -5,16 +5,15 @@ class Cog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def math(self, nums: list, op: str):
+    def math(self, nums: list, op: str, ctx: Context):
         try: nums = list(map(float, nums))
-        except: raise TypeError
+        except: return f'Input error! Use `{ctx.prefix}help math {ctx.command}` for help.', None
 
         show = (
             ''.join(f'{x} {op} ' for x in nums)[:-3]
             if op in {'+', '*'}
             else f'{nums[0]} {op} {nums[1]}'
         )
-
 
         if op == '*':
             result = 1
@@ -29,21 +28,10 @@ class Cog(commands.Cog):
 
         return show, result
 
-
-    # @commands.command()
-    # async def add(self, ctx: Context, *nums):
-    #     try:
-    #         show, result = self.math(nums, '+')
-    #         await ctx.send(f'{show} = {result}')
-    #     except:
-    #         await ctx.send
-
-    async def test_def(self, ctx: Context):
-        await ctx.send('tested')
-
     @commands.command()
-    async def test(self, ctx: Context):
-        self.test_def(ctx)
+    async def add(self, ctx: Context, *nums):
+        show, result = self.math(nums, '+')
+        await ctx.send(f'{show} = {result}' if result is not None else show)    
 
 def setup(bot):
     bot.add_cog(Cog(bot))
