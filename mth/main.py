@@ -13,10 +13,8 @@ class Cog(commands.Cog):
             await ctx.send(f'Input error! use `{ctx.prefix}help math {ctx.command}`')
             return
 
-        show = ''
-        for x in nums:
-            show += f'{x} + '
-
+        show = ''.join(f'{x} + ' for x in nums)
+        
         await ctx.send(f'{show[:-2]} = {sum(nums)}')
 
 def setup(bot):
