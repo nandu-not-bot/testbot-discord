@@ -12,7 +12,7 @@ class Cog(commands.Cog):
         self.bot = bot
 
     def bot_choice(self):
-        choice = random.randchoice(Play)
+        choice = random.choice(Play)
         return choice
 
     @commands.command()
