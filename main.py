@@ -8,17 +8,17 @@ from keep_alive import keep_alive # To keep the bot alive and not shut down.
 # Function that recognizes and returns prefixes when metioned by a user.
 def get_prefix(bot, message):
     # All the prefixes recognized by Chitti.
-    prefixes = ['do ', '$', 'chitti ', '/']
+    prefixes = ['.']
 
     if not message.guild:
-        return '$'
+        return '.'
 
     return commands.when_mentioned_or(*prefixes)(bot, message)
 
 # All the extenstions or cogs to be loaded into Chitti.
 initial_extensions = [
     'misc', 
-    'rps.main', 
+    'rps.refresh', 
     # 'ttt.main', 
     # 'listener.listener', 
     # 'mth.math', 
