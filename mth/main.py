@@ -1,5 +1,6 @@
 from discord.ext import commands
 from discord.ext.commands.context import Context
+import math, statistics
 
 class Cog(commands.Cog):
 
@@ -83,7 +84,7 @@ class Cog(commands.Cog):
             await ctx.send(f'Input error! Use `{ctx.prefix}help math {ctx.command}` for help.') 
             return
 
-        mean = sum(nums) / len(nums)
+        mean = statistics.mean(nums)
 
         await ctx.send(f'The arithmetic mean of `{nums}` is `{mean}`')
 
@@ -98,9 +99,9 @@ class Cog(commands.Cog):
             await ctx.send(f'Input error! Use `{ctx.prefix}help math {ctx.command}` for help.')
             return
 
-        nums.sort()
+        median = statistics.median(nums)
 
-        median = nums[((len(nums) + 1) / 2) + 1] if len(nums) % 2 == 0 else (nums[((len(nums) + 1) / 2) + 1] + nums[(len(nums) / 2) + 1]) / 2
+        nums.sort()
 
         await ctx.send(f'The median of `{nums}` is `{median}`')
 
@@ -115,21 +116,9 @@ class Cog(commands.Cog):
             await ctx.send(f'Input error! Use `{ctx.prefix}help math {ctx.command}` for help.')
             return
 
-        uniques = set(nums)
+        mode = statistics.mode(nums)
 
-        modes = []
-        top_count = 0
-
-        for num in uniques:
-            count = nums.count(num)
-            if count == top_count:
-                modes.append(nums)
-
-            elif count > top_count:
-                modes = [nums]
-                top_count = count
-
-        await ctx.send(f'The mode(s) of the list `{nums}` is `{modes if len(modes) > 1 else modes[0]}` occuring `{count}` number of times each.')
+        await ctx.send(f'The mode of the list `{nums}` is `{mode}` occuring `{nums.count(mode)}` number of times.')
 
 def setup(bot):
     bot.add_cog(Cog(bot))
