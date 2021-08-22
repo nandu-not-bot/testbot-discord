@@ -13,7 +13,7 @@ class Cog(commands.Cog):
             await ctx.send(f'Input error! use `{ctx.prefix}help math {ctx.command}`')
             return
 
-        show : str
+        show = ''
         for x in nums:
             show += f'{x} + '
 
