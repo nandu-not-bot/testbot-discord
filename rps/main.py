@@ -1,7 +1,11 @@
+from discord import Embed
 from discord.ext import commands
-import random
+from discord.ext.commands.context import Context
 from enum import Enum
 from rps.logic import logic
+import random
+
+PURPLE = 0x510490
 
 class Play(Enum):
     rock = 1
@@ -21,7 +25,11 @@ class Cog(commands.Cog):
         return Play(random.randint(1, 3))
 
     @commands.command()
-    async def test(self, ctx):
+    def rps(self, ctx: Context):
+        pass
+
+    @commands.command()
+    async def test(self, ctx: Context):
         await ctx.send(self.bot_choice())
 
 def setup(bot):

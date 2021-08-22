@@ -26,7 +26,7 @@ class RPScog(commands.Cog):
         def play_check(m):
             return m.content in ['rock', 'paper', 'scissors'] and m.channel == channel and m.author == p1
 
-        import rps.WinLogic as wl
+        import rps.logic as wl
 
         while True:
             await ctx.send(f'{p1.mention} type your choice! rock, paper or scissors.')
