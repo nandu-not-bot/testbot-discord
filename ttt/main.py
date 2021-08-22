@@ -11,8 +11,7 @@ class TTT(commands.Cog):
             ['b1', 'b2', 'b3'],
             ['c1', 'c2', 'c3']
         ]
-        self.moveset = ['a1', 'a2', 'a3', 'b1',
-                        'b2', 'b3', 'c1', 'c2', 'c3']
+        self.moveset = ['a1', 'a2', 'a3', 'b1', 'b2', 'b3', 'c1', 'c2', 'c3']
         self.p1 = None
         self.player = self.p1
         self.check_board = [
