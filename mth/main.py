@@ -30,7 +30,7 @@ class Cog(commands.Cog):
 
     @commands.command()
     async def add(self, ctx: Context, *nums):
-        show, result = self.math(nums, '+')
+        show, result = self.math(nums, '+', ctx)
         await ctx.send(f'{show} = {result}' if result is not None else show)    
 
 def setup(bot):

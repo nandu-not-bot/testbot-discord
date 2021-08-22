@@ -54,4 +54,4 @@ keep_alive()
 # Runs the bot instance
 bot.run(
     os.environ['TOKEN'], # Extracts Bot token stored in replit. (Hosting website is Replit) 
-    bot=True, reconnect=True) 
+    bot=True, reconnect=True)
