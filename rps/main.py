@@ -26,7 +26,10 @@ class Cog(commands.Cog):
 
     @commands.command()
     def rps(self, ctx: Context):
-        pass
+        p1 = ctx.author
+        channel = ctx.channel
+
+        
 
     @commands.command()
     async def test(self, ctx: Context):
