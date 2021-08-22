@@ -11,7 +11,7 @@ class Cog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def bot_choice():
+    def bot_choice(self):
         choice = random.randchoice(Play)
         return choice
 
