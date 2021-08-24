@@ -38,8 +38,12 @@ class Listener(commands.Cog):
 
         if guild not in data['listener']:
             data['listener'][guild] = {
-                'replies': {},
-                'active_keys': [],
+                'replies': {
+
+                },
+                'active_keys': [
+                    
+                ],
                 'is_enabled': True
             }
 

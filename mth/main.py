@@ -9,33 +9,38 @@ class Cog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
-    def math(self, nums: list, op: str, ctx: Context):
-        try: 
-            nums = list(map(float, nums))
-        except: 
-            return f'Input error! Use `{ctx.prefix}help math {ctx.command}` for help.', None
+    async def math(self, nums: list, op: str, ctx: Context):
+        nums = await self.convert_list(nums, ctx)
+
+        if nums is None:
+            return
 
         show = (
             ''.join(f'{x} {op} ' for x in nums)[:-3]
-            if op in {'+', '*'}
+            if op in {'+', 'x'}
             else f'{nums[0]} {op} {nums[1]}'
         )
 
-        if op == '*':
-            result = 1
-            for num in nums:
-                result *= num
-        elif op == '+':
+        if op == '+':
             result = sum(nums)
         elif op == '-':
             result = nums[0] - nums[1]
         elif op == '/':
             result = nums[0] / nums[1]
 
+        elif op == 'x':
+            result = 1
+            for num in nums:
+                result *= num
         return show, result
 
-    def convert_list(self, input: list):
-        input = list(map(float, input))
+    async def convert_list(self, input: list, ctx: Context):
+        try:
+            input = list(map(float, input))
+            return input
+        except:
+            await ctx.send(f'Input error! Use `{ctx.prefix}help math {ctx.command}` for help.')
+            return
 
     # Basic Arithmetic Operations
 
@@ -44,48 +49,52 @@ class Cog(commands.Cog):
 
         '''Gives the sum of an infinite number given numbers.'''
 
+        if self.math(nums, '+', ctx) is None:
+            return
+
         show, result = self.math(nums, '+', ctx)
-        await ctx.send(f'{show} = {result}' if result is not None else show)  
+        await ctx.send(f'{show} = {result}')
 
     @commands.command()
     async def sub(self, ctx: Context, *nums):
 
         '''Gives the differenc of two given numbers.'''
 
+        if self.math(nums, '-', ctx) is None:
+            return
+            
         show, result = self.math(nums, '-', ctx)
-        await ctx.send(f'{show} = {result}' if result is not None else show)
+        await ctx.send(f'{show} = {result}')
 
     @commands.command()
     async def mult(self, ctx: Context, *nums):
 
         '''Gives the product of an infinite number of given numbers.'''
 
-        show, result = self.math(nums, '*', ctx)
-        await ctx.send(f'{show} = {result}' if result is not None else show)   
+        if self.math(nums, 'x', ctx) is None:
+            return
+            
+        show, result = self.math(nums, 'x', ctx)
+        await ctx.send(f'{show} = {result}')   
     
     @commands.command()
     async def div(self, ctx: Context, *nums):
 
         '''Gives the quotient of two given numbers.'''
 
-        show, result = self.math(nums, '/', ctx)
-        await ctx.send(f'{show} = {result}' if result is not None else show)
+        if self.math(nums, '+', ctx) is None:
+            return
+            
+        show, result = self.math(nums, '+', ctx)
+        await ctx.send(f'{show} = {result}')
 
     # Statistical Measures of Central Tendancies
-    async def convert_list(self, input_list: list, ctx: Context):
-        channel = self.bot.get_channel(ctx.channel.id)
-        
-        await channel.send('tested')
-
     @commands.command()
     async def mean(self, ctx: Context, *nums):
     
         '''Gives the arithmetic mean or average of an infinite number of given numbers.'''
     
-        try:
-            nums = list(map(float, nums))
-        except:
-            await ctx.send(f'Input error! Use `{ctx.prefix}help math {ctx.command}` for help.') 
+        if self.convert_list(nums) is None:
             return
 
         mean = statistics.mean(nums)
@@ -97,10 +106,7 @@ class Cog(commands.Cog):
     
         '''Gives the mdian of an infinite list of given numbers.'''
     
-        try:
-            nums = list(map(float, nums))
-        except:
-            await ctx.send(f'Input error! Use `{ctx.prefix}help math {ctx.command}` for help.')
+        if self.convert_list(nums) is None:
             return
 
         median = statistics.median(nums)
@@ -114,23 +120,12 @@ class Cog(commands.Cog):
     
         '''Gives the mode of an infinite list of given numbers.'''
     
-        try:
-            nums = list(map(float, nums))
-        except:
-            await ctx.send(f'Input error! Use `{ctx.prefix}help math {ctx.command}` for help.')
+        if self.convert_list(nums) is None:
             return
 
         mode = statistics.mode(nums)
 
         await ctx.send(f'The mode of the list `{nums}` is `{mode}` occuring `{nums.count(mode)}` number of times.')
-
-    @commands.command()
-    async def test(self, ctx: Context):
-    
-        '''test'''
-    
-        self.convert_list([], ctx)
-    
 
 
 def setup(bot):

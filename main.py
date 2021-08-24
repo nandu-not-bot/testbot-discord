@@ -18,14 +18,14 @@ def get_prefix(bot, message):
 # All the extenstions or cogs to be loaded into Chitti.
 initial_extensions = [
     'misc', 
+    'mth.main', 
+    'listener.main', 
     # 'rps.main', 
     # 'ttt.main', 
-    # 'listener.listener', 
-    'mth.main', 
-    # 'help', 
     # 'ranking.ranking', 
     # 'ask.ask', 
     # 'suggestion_react.react'
+    # 'help', 
     ]
 
 intents = discord.Intents.default()
