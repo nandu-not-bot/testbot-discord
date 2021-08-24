@@ -49,10 +49,10 @@ class Cog(commands.Cog):
 
         '''Gives the sum of an infinite number given numbers.'''
 
-        if self.math(nums, '+', ctx) is None:
+        if await self.math(nums, '+', ctx) is None:
             return
 
-        show, result = self.math(nums, '+', ctx)
+        show, result = await self.math(nums, '+', ctx)
         await ctx.send(f'{show} = {result}')
 
     @commands.command()
@@ -60,10 +60,10 @@ class Cog(commands.Cog):
 
         '''Gives the differenc of two given numbers.'''
 
-        if self.math(nums, '-', ctx) is None:
+        if await self.math(nums, '-', ctx) is None:
             return
             
-        show, result = self.math(nums, '-', ctx)
+        show, result = await self.math(nums, '-', ctx)
         await ctx.send(f'{show} = {result}')
 
     @commands.command()
@@ -71,10 +71,10 @@ class Cog(commands.Cog):
 
         '''Gives the product of an infinite number of given numbers.'''
 
-        if self.math(nums, 'x', ctx) is None:
+        if await self.math(nums, 'x', ctx) is None:
             return
             
-        show, result = self.math(nums, 'x', ctx)
+        show, result = await self.math(nums, 'x', ctx)
         await ctx.send(f'{show} = {result}')   
     
     @commands.command()
@@ -82,10 +82,10 @@ class Cog(commands.Cog):
 
         '''Gives the quotient of two given numbers.'''
 
-        if self.math(nums, '+', ctx) is None:
+        if await self.math(nums, '+', ctx) is None:
             return
             
-        show, result = self.math(nums, '+', ctx)
+        show, result = await self.math(nums, '+', ctx)
         await ctx.send(f'{show} = {result}')
 
     # Statistical Measures of Central Tendancies

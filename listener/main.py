@@ -27,9 +27,13 @@ class Cog(commands.Cog):
     def dump_guild(guild: Guild):
         db[str(guild.id)] = asdict(guild)
 
-    @staticmethod
-    def join_list(lst: list):
-        return ' '.join(map(str, lst))
+    def construct_key(self, f):
+        async def wrapper(self, ctx:Context, *key):
+
+            key = ' '.join(map(str, key))
+            await f(self, ctx, key)
+
+        return wrapper
 
     async def wait_for(self, check, ctx: Context, msg_type: str = 'message', timeout: int = 60):
         try:
@@ -39,7 +43,7 @@ class Cog(commands.Cog):
                 check = check
                 )
         except Exception:
-            await ctx.reply(embed=embeds.timeout_command_cancel)
+            await ctx.reply(embed=embeds.timeout_command_cancel, mention_author=False)
             return
         else:
             return response
@@ -110,7 +114,7 @@ class Cog(commands.Cog):
     
         '''Adds a key and a reply to your server.'''
 
-        key = self.join_list(key)
+        key = self.construct_key(key)
         guild = self.get_guild(ctx.guild.id)
 
         if len(key) == 0:
@@ -166,6 +170,8 @@ class Cog(commands.Cog):
     
         '''Removes a reply from a specified key.'''
 
+        
+
     @cc.command()
     async def toggle(self, ctx: Context, *key):
     
@@ -175,6 +181,15 @@ class Cog(commands.Cog):
     async def show(self, ctx: Context, *key):
     
         '''Shows list of all the keys and replies.'''
+
+    @commands.command()
+    @construct_key
+    async def test(self, ctx: Context, key):
+    
+        '''Tester'''
+    
+        await ctx.send(key)
+    
         
 
 def setup(bot):
