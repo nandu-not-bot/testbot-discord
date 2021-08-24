@@ -153,6 +153,7 @@ class Cog(commands.Cog):
 
         if key not in guild.replies:
             guild.replies[key] = [reply]
+            guild.active_keys.append(key)
         else:
             guild.replies[key].append(reply)
 
