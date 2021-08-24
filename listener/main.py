@@ -31,7 +31,7 @@ class Cog(commands.Cog):
     def join_list(lst: list):
         return ' '.join(map(str, lst))
 
-    async def wait_for(self, check: function, ctx: Context, msg_type: str = 'message', timeout: int = 60):
+    async def wait_for(self, check, ctx: Context, msg_type: str = 'message', timeout: int = 60):
         try:
             response = await self.bot.wait_for(
                 msg_type, 
@@ -120,6 +120,8 @@ class Cog(commands.Cog):
             if key is None:
                 return
 
+            key = key.content
+
         if key in guild.replies:
             await ctx.send(f'Keyword `{key}` already exists, are you sure you would like to add a reply to it? (y/n)')
 
@@ -135,6 +137,8 @@ class Cog(commands.Cog):
 
         if reply is None:
             return
+
+        reply = reply.content
         
         if key in guild.replies and reply in guild.replies[key]:
             await ctx.send(embed=embeds.reply_exists())
