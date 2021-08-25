@@ -186,7 +186,7 @@ class Cog(commands.Cog):
     
         '''Shows list of all the keys and replies.'''
 
-    @commands.command()
+    @cc.command()
     @Decor.construct_key
     async def test(self, ctx: Context, key):
     
