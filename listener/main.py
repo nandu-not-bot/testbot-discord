@@ -9,6 +9,14 @@ from replit import db
 import embeds
 from classes import Guild
 
+def construct_key(f):
+    async def wrapper(ctx, *key):
+
+        key = ' '.join(map(str, key))
+        await f(ctx, key)
+
+    return wrapper
+
 class Cog(commands.Cog):
 
     '''Custom Commands and Replies!'''
@@ -27,17 +35,6 @@ class Cog(commands.Cog):
     def dump_guild(guild: Guild):
         db[str(guild.id)] = asdict(guild)
 
-    class Decor:
-        @classmethod
-        def construct_key(cls, f):
-            async def wrapper(self, ctx, *key):
-
-                key = ' '.join(map(str, key))
-                await f(ctx, key)
-    
-            return wrapper
-
-    
 
     async def wait_for(self, check, ctx: Context, msg_type: str = 'message', timeout: int = 60):
         try:
@@ -187,7 +184,7 @@ class Cog(commands.Cog):
         '''Shows list of all the keys and replies.'''
 
     @cc.command()
-    @Decor.construct_key
+    @construct_key
     async def test(self, ctx: Context, key):
     
         '''Tester'''
