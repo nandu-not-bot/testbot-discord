@@ -186,8 +186,9 @@ class Cog(commands.Cog):
     
         '''Shows list of all the keys and replies.'''
 
+    @construct_key
     @cc.command()
-    async def test(self, ctx: Context, key):
+    async def test(self, ctx: Context, *key):
     
         '''Tester'''
     
