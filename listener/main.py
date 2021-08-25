@@ -27,14 +27,17 @@ class Cog(commands.Cog):
     def dump_guild(guild: Guild):
         db[str(guild.id)] = asdict(guild)
 
-    @staticmethod
-    def construct_key(f):
-        async def wrapper(self, ctx, *key):
+    class Decor:
+        @classmethod
+        def construct_key(cls, f):
+            async def wrapper(self, ctx, *key):
 
-            key = ' '.join(map(str, key))
-            await f(self, ctx, key)
- 
-        return wrapper
+                key = ' '.join(map(str, key))
+                await f(ctx, key)
+    
+            return wrapper
+
+    
 
     async def wait_for(self, check, ctx: Context, msg_type: str = 'message', timeout: int = 60):
         try:
@@ -184,7 +187,7 @@ class Cog(commands.Cog):
         '''Shows list of all the keys and replies.'''
 
     @commands.command()
-    @construct_key
+    @Decor.construct_key
     async def test(self, ctx: Context, key):
     
         '''Tester'''
