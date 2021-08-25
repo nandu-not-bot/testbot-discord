@@ -16,7 +16,10 @@ command_cancel = discord.Embed(
     color = discord.Colour.red()
 )
 
+
 # Custom Command
+
+    # cc add
 
 def keyword_added(keyword, reply, prefix):
     return discord.Embed(
@@ -32,7 +35,7 @@ def confirm_add(keyword, reply):
         description = f'Are you sure you want to add response, `{reply}`, to key `{keyword}` (y/n)',
         footer = f'Respond in "y" or "n"',
         color = PURPLE
-        )
+    )
 
 def reply_exists(keyword, reply):
     return discord.Embed(
@@ -41,3 +44,7 @@ def reply_exists(keyword, reply):
         footer = f'Redo the command to do it again.',
         color = discord.Colour.red()
     )
+
+    
+    # cc remove
+

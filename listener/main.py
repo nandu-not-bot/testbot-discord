@@ -10,10 +10,10 @@ import embeds
 from classes import Guild
 
 def construct_key(f):
-    async def wrapper(ctx, *key):
+    async def wrapper(*key):
 
         key = ' '.join(map(str, key))
-        await f(ctx, key)
+        await f(key)
 
     return wrapper
 
@@ -130,7 +130,10 @@ class Cog(commands.Cog):
         if key in guild.replies:
             await ctx.send(f'Keyword `{key}` already exists, are you sure you would like to add a reply to it? (y/n)')
 
-            response = await self.wait_for(lambda m: m.author == ctx.author and m.content.lower() in ['yes', 'no', 'y', 'n'], ctx)
+            response = await self.wait_for(
+                lambda m: m.author == ctx.author and m.content.lower() in ['yes', 'no', 'y', 'n'], 
+                ctx
+                )
             if response is None:
                 return
             if response.content.lower() in 'no':
@@ -184,13 +187,11 @@ class Cog(commands.Cog):
         '''Shows list of all the keys and replies.'''
 
     @cc.command()
-    @construct_key
     async def test(self, ctx: Context, key):
     
         '''Tester'''
     
         await ctx.send(key)
-    
         
 
 def setup(bot):

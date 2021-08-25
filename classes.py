@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from typing import List
 
 @dataclass
 class Member:
@@ -16,12 +17,12 @@ class Guild:
 
     # For custom commands
     replies: dict = field(default_factory=dict)
-    active_keys: list = field(default_factory=list)
+    active_keys: List[str] = field(default_factory=list)
     is_enabled: bool = True
 
     # For messaging scores
-    members: list = field(default_factory=list)
-    excluded_channels: list = field(default_factory=list)
+    members: List[Member] = field(default_factory=list)
+    excluded_channels: List[str] = field(default_factory=list)
 
     def get_leaderboard(self):
         return sorted(self.members, key=lambda member: member.score)
