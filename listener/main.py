@@ -10,10 +10,10 @@ import embeds
 from classes import Guild
 
 def construct_key(f):
-    async def wrapper(*key):
+    async def wrapper(ctx, *key):
 
         key = ' '.join(map(str, key))
-        await f(key)
+        await f(ctx, key)
 
     return wrapper
 
