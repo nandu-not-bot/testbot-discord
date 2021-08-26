@@ -67,18 +67,20 @@ def keyword_not_found(keyword):
     )
 
 def show_replies(keyword: str, replies: list):
-    return discord.Embed(
+    embed = discord.Embed(
         title = f'Replies for "{keyword}"',
         descrption = f'Enter index number of reply to be removed: ',
-        fields = [
-            {
-                'name' : f'{replies.index(reply) - 1}. {reply}',
-                'inline' : False
-            } for reply in replies[keyword]
-        ],
         footer = 'Respond with "c" to cancel command.',
         color = PURPLE
     )
+
+    for reply in replies:
+        embed.add_field(
+            name = f'{replies.index(reply) - 1}. {reply}',
+            inline = False
+        )
+
+    return embed
 
 def invalid_index(index: str):
     return discord.Embed(
