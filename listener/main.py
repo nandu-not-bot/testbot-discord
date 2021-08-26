@@ -1,5 +1,6 @@
 import random
 from dataclasses import asdict
+from typing import Callable
 
 import discord
 from discord.ext import commands
@@ -8,14 +9,6 @@ from replit import db
 
 import embeds
 from classes import Guild
-
-def construct_key(f):
-    async def wrapper(ctx, *key):
-
-        key = ' '.join(map(str, key))
-        await f(ctx, key)
-
-    return wrapper
 
 class Cog(commands.Cog):
 
@@ -35,8 +28,17 @@ class Cog(commands.Cog):
     def dump_guild(guild: Guild):
         db[str(guild.id)] = asdict(guild)
 
+    @staticmethod
+    def construct_key(key: list):
+        return ' '.join(map(str, key))
 
-    async def wait_for(self, check, ctx: Context, msg_type: str = 'message', timeout: int = 60):
+    async def wait_for(
+            self, 
+            check: Callable, 
+            ctx: Context, 
+            msg_type: str = 'message', 
+            timeout: int = 60
+        ):
         try:
             response = await self.bot.wait_for(
                 msg_type, 
@@ -44,7 +46,10 @@ class Cog(commands.Cog):
                 check = check
                 )
         except Exception:
-            await ctx.reply(embed=embeds.timeout_command_cancel, mention_author=False)
+            await ctx.reply(
+                embed=embeds.timeout_command_cancel, 
+                mention_author=False
+            )
             return
         else:
             return response
@@ -68,10 +73,14 @@ class Cog(commands.Cog):
                 return
 
             if ' ' in keyword and keyword in message.content.lower(): 
-                await message.channel.send(random.choice(guild.replies[keyword]))
+                await message.channel.send(
+                    random.choice(guild.replies[keyword])
+                ) 
 
             elif keyword in message.content.lower().split():
-                await message.channel.send(random.choice(guild.replies[keyword]))
+                await message.channel.send(
+                    random.choice(guild.replies[keyword])
+                )
 
     @commands.group(invoke_without_command=True)
     async def cc(self, ctx: Context):
@@ -88,10 +97,14 @@ class Cog(commands.Cog):
         guild = self.get_guild(ctx.guild.id)
 
         if guild.is_enabled:
-            await ctx.send('Custom commands are already enabled for this server, buddy.')
+            await ctx.send(
+                'Custom commands are already enabled for this server, buddy.'
+            )
         else:
             guild.is_enabled = True
-            await ctx.send('Custom commands have been **enabled** for this server')
+            await ctx.send(
+                'Custom commands have been **enabled** for this server'
+            )
 
         self.dump_guild(guild)
     
@@ -103,10 +116,14 @@ class Cog(commands.Cog):
         guild = self.get_guild(ctx.guild.id)
 
         if not guild.is_enabled:
-            await ctx.send('Custom commands are already disabled for this server, dude.')
+            await ctx.send(
+                'Custom commands are already disabled for this server, dude.'
+            )
         else:
             guild.is_enabled = False
-            await ctx.send('Custom commands have been **disabled** for this server')
+            await ctx.send(
+                'Custom commands have been **disabled** for this server'
+            )
 
         self.dump_guild(guild)
 
@@ -128,10 +145,12 @@ class Cog(commands.Cog):
             key = key.content
 
         if key in guild.replies:
-            await ctx.send(f'Keyword `{key}` already exists, are you sure you would like to add a reply to it? (y/n)')
+            await ctx.send(embed=embeds.key_exists(key))
 
             response = await self.wait_for(
-                lambda m: m.author == ctx.author and m.content.lower() in ['yes', 'no', 'y', 'n'], 
+                lambda m: m.author == ctx.author and m.content.lower() in [
+                    'yes', 'no', 'y', 'n'
+                ], 
                 ctx
                 )
             if response is None:
@@ -154,9 +173,20 @@ class Cog(commands.Cog):
 
         await ctx.send(embed=embeds.confirm_add(key, reply))
 
-        confirm = await self.wait_for(lambda m: m.author == ctx.author and m.content.lower() in ['yes', 'no', 'y', 'n'], ctx)
+        confirm = await self.wait_for(
+            lambda m: m.author == ctx.author and m.content.lower() in [
+                'yes', 'no', 'y', 'n'
+            ], 
+            ctx
+        )
 
         if confirm is None:
+            return
+
+        confirm = confirm.content
+        
+        if confirm.lower() in ['no', 'n']:
+            await ctx.send(embed=embeds.command_cancel)
             return
 
         if key not in guild.replies:
@@ -174,7 +204,70 @@ class Cog(commands.Cog):
     
         '''Removes a reply from a specified key.'''
 
+        key = self.construct_key(key)
+        guild = self.get_guild(ctx.guild.id)
+
+        if len(key == 0):
+            await ctx.send(
+                'Enter the keyword from which you want a reply removed...'
+            )
         
+            key = await self.wait_for(
+                lambda m: m.author == ctx.author,
+                ctx
+            )
+
+            if key is None:
+                return
+
+        if key not in guild.replies:
+            await ctx.send(embed=embeds.keyword_not_found(key))
+            return
+
+        await ctx.send(embed=embeds.show_replies(key, guild.replies[key]))
+
+        reply_index = await self.wait_for(
+            lambda m: m.author == ctx.author
+        )
+
+        if reply_index is None:
+            return 
+
+        reply_index = reply_index.content
+
+        if reply_index.lower() == 'c':
+            await ctx.send(embed=embeds.command_cancel)
+
+        try: int(reply_index)
+        except Exception:
+            await ctx.send(embed=embeds.invalid_index(reply_index))
+            return
+
+        if reply_index not in range(len(guild.replies[key])+1):
+            await ctx.send(embed=embeds.invalid_index(reply_index))
+            return
+
+        reply = guild.replies[key][reply_index - 1]
+        await ctx.send(embed=embeds.remove_reply_confirm(key, reply))
+
+        response = await self.wait_for(
+            lambda m: m.author == ctx.author and m.content.lower() in [
+                'yes', 'y', 'no', 'n'
+            ],
+            ctx
+        )
+
+        if response is None: return
+        if response.content.lower() in ['n', 'no']:
+            await ctx.send(embed=embeds.command_cancel)
+            return
+
+        if len(guild.replies[key]) == 1:
+            del guild.replies[key]
+        else:
+            guild.replies[key].remove(reply)
+
+        await ctx.send(embed=embeds.remove_reply_confirm(key, reply))
 
     @cc.command()
     async def toggle(self, ctx: Context, *key):
@@ -186,14 +279,6 @@ class Cog(commands.Cog):
     
         '''Shows list of all the keys and replies.'''
 
-    @construct_key
-    @cc.command()
-    async def test(self, ctx: Context, *key):
-    
-        '''Tester'''
-    
-        await ctx.send(key)
-        
 
 def setup(bot):
     bot.add_cog(Cog(bot))

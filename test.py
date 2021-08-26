@@ -1,9 +1,7 @@
-import inspect
-
 def dec(f):
-    def wrapper(*key):
+    def wrapper(id, *key):
         ints = [int(e) for e in key]
-        f(key=ints)
+        f(id, key=ints)
     return wrapper
 
 @dec

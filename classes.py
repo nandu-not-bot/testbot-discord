@@ -26,3 +26,4 @@ class Guild:
 
     def get_leaderboard(self):
         return sorted(self.members, key=lambda member: member.score)
+
