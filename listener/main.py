@@ -229,7 +229,8 @@ class Cog(commands.Cog):
         await ctx.send(embed=embeds.show_replies(key, guild.replies[key]))
 
         reply_index = await self.wait_for(
-            lambda m: m.author == ctx.author
+            lambda m: m.author == ctx.author,
+            ctx
         )
 
         if reply_index is None:
@@ -237,19 +238,18 @@ class Cog(commands.Cog):
 
         reply_index = reply_index.content
 
-        if reply_index.lower() == 'c':
-            await ctx.send(embed=embeds.command_cancel)
-
-        try: int(reply_index)
+        try: 
+            reply_index = int(reply_index)
+            reply_index -= 1
         except Exception:
             await ctx.send(embed=embeds.invalid_index(reply_index))
             return
 
-        if reply_index not in range(len(guild.replies[key])+1):
+        if reply_index >= len(guild.replies[key]):
             await ctx.send(embed=embeds.invalid_index(reply_index))
             return
 
-        reply = guild.replies[key][reply_index - 1]
+        reply = guild.replies[key][reply_index]
         await ctx.send(embed=embeds.remove_reply_confirm(key, reply))
 
         response = await self.wait_for(
@@ -269,7 +269,9 @@ class Cog(commands.Cog):
         else:
             guild.replies[key].remove(reply)
 
-        await ctx.send(embed=embeds.remove_reply_confirm(key, reply))
+        self.dump_guild(guild)
+
+        await ctx.send(embed=embeds.reply_removed(key, reply))
 
     @cc.command()
     async def toggle(self, ctx: Context, *key):

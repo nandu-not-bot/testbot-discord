@@ -76,7 +76,8 @@ def show_replies(keyword: str, replies: list):
 
     for reply in replies:
         embed.add_field(
-            name = f'{replies.index(reply) - 1}. {reply}',
+            name = f'{replies.index(reply) + 1}:',
+            value = f'{reply}',
             inline = False
         )
 
@@ -94,7 +95,7 @@ def remove_reply_confirm(keyword: str, reply: str):
     return discord.Embed(
         title = 'Are you sure?',
         description = 
-            f'Are you sure you want to remove response, `{reply}` from keyword, `{keyword}``. (y/n)',
+            f'Are you sure you want to remove response, `{reply}` from keyword, `{keyword}`. (y/n)',
         footer = 'Respond with "y" for yes or "n" for no.',
         color = PURPLE
     )
