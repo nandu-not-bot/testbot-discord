@@ -70,7 +70,7 @@ class Cog(commands.Cog):
 
         for keyword in guild.replies:
             if keyword not in guild.active_keys: 
-                return
+                continue
 
             if ' ' in keyword and keyword in message.content.lower(): 
                 await message.channel.send(
