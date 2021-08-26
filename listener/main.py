@@ -220,6 +220,8 @@ class Cog(commands.Cog):
             if key is None:
                 return
 
+            key = key.content
+
         if key not in guild.replies:
             await ctx.send(embed=embeds.keyword_not_found(key))
             return
