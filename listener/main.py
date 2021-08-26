@@ -207,7 +207,7 @@ class Cog(commands.Cog):
         key = self.construct_key(key)
         guild = self.get_guild(ctx.guild.id)
 
-        if len(key == 0):
+        if len(key) == 0:
             await ctx.send(
                 'Enter the keyword from which you want a reply removed...'
             )
