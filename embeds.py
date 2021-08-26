@@ -58,7 +58,7 @@ def reply_exists(keyword, reply):
     
     # cc remove
 
-def key_not_found(keyword):
+def keyword_not_found(keyword):
     return discord.Embed(
         title = 'Keyword not found!'.title(),
         description = f'Keyword, `{keyword}` not found! Bummer! Command Cancelled.',
