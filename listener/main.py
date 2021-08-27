@@ -287,6 +287,13 @@ class Cog(commands.Cog):
         if len(key) == 0:
             await ctx.send(embed=CustomCommandEmbeds.Show.show_all(guild))
 
+        elif key not in guild.replies:
+            await ctx.send(
+                embed=CustomCommandEmbeds.Show.key_not_found(key, ctx.prefix)
+            )
+        else:
+            await ctx.send(embed=CustomCommandEmbeds.Show.show_key(key, guild))
+
 
 def setup(bot):
     bot.add_cog(Cog(bot))

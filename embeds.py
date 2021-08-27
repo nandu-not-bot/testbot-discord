@@ -141,21 +141,41 @@ class CustomCommandEmbeds:
     class Show:
         """cc show/list"""
 
+        @staticmethod
         def show_all(guild):
             embed = discord.Embed(
-                title='All the custom commands and responses',
-                color  =PURPLE
+                title="All the custom commands and responses", color=PURPLE
             )
 
             for command in guild.replies:
-                replies = ''.join(
-                    f'{guild.replies[command].index(reply) + 1} : `{reply}` \n'
+                replies = "".join(
+                    f"{guild.replies[command].index(reply) + 1} : `{reply}` \n"
                     for reply in guild.replies[command]
                 )
 
                 embed.add_field(
-                    name = f'{command} - [{"ON" if command in guild.active_keys else "OFF"}]',
-                    value = replies
+                    name=f'{command} - [{"ON" if command in guild.active_keys else "OFF"}]',
+                    value=replies,
                 )
 
             return embed
+
+        @staticmethod
+        def key_not_found(key, prefix):
+            return discord.Embed(
+                title="Huh?",
+                description = f"I cant seem to find the key, `{key}` you're talking about :/"
+            ).set_footer(
+                text = 'Use `{prefix}cc show` to make sure it actually exists.'
+            )
+
+        @staticmethod
+        def show_key(key, guild):
+            return discord.Embed(
+                title=f"All replies for key `{key}`",
+                description="".join(
+                    f'{guild.replies[key].index(reply) + 1} : `{reply}` \n'
+                    for reply in guild.replies[key]
+                ),
+                color=PURPLE
+            )
