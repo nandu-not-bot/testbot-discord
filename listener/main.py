@@ -10,8 +10,9 @@ from replit import db
 from embeds import GeneralEmbeds, CustomCommandEmbeds
 from classes import Guild
 
+
 class Cog(commands.Cog):
-    '''Custom Commands and Replies!'''
+    """Custom Commands and Replies!"""
 
     def __init__(self, bot):
         self.bot = bot
@@ -29,35 +30,27 @@ class Cog(commands.Cog):
 
     @staticmethod
     def construct_key(key: list):
-        return ' '.join(map(str, key))
+        return " ".join(map(str, key))
 
     async def wait_for(
-            self, 
-            check: Callable, 
-            ctx: Context, 
-            msg_type: str = 'message', 
-            timeout: int = 60
-        ):
+        self,
+        check: Callable,
+        ctx: Context,
+        msg_type: str = "message",
+        timeout: int = 60,
+    ):
         try:
-            response = await self.bot.wait_for(
-                msg_type, 
-                timeout = timeout,
-                check = check
-                )
+            response = await self.bot.wait_for(msg_type, timeout=timeout, check=check)
         except Exception:
-            await ctx.reply(
-                embed=GeneralEmbeds.timeout(), 
-                mention_author=False
-            )
+            await ctx.reply(embed=GeneralEmbeds.timeout(), mention_author=False)
             return
         else:
             return response
 
-
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
 
-        '''Replies to the custom keywords'''
+        """Replies to the custom keywords"""
 
         guild = self.get_guild(message.guild.id)
 
@@ -68,74 +61,66 @@ class Cog(commands.Cog):
             return
 
         for keyword in guild.replies:
-            if keyword not in guild.active_keys: 
+            if keyword not in guild.active_keys:
                 continue
 
-            if ' ' in keyword and keyword in message.content.lower(): 
-                await message.channel.send(
-                    random.choice(guild.replies[keyword])
-                ) 
+            if " " in keyword and keyword in message.content.lower():
+                await message.channel.send(random.choice(guild.replies[keyword]))
 
             elif keyword in message.content.lower().split():
-                await message.channel.send(
-                    random.choice(guild.replies[keyword])
-                )
+                await message.channel.send(random.choice(guild.replies[keyword]))
 
     @commands.group(invoke_without_command=True)
     async def cc(self, ctx: Context):
-    
-        '''Parent commands for cc command group.'''
 
-        await ctx.send('Uh oh! Cant use this command without a subcommand.')
+        """Parent commands for cc command group."""
+
+        await ctx.send("Uh oh! Cant use this command without a subcommand.")
 
     @cc.command()
     async def enable(self, ctx: Context):
-    
-        '''Enables custom commands for the whole server.'''
+
+        """Enables custom commands for the whole server."""
 
         guild = self.get_guild(ctx.guild.id)
 
         if guild.is_enabled:
             await ctx.send(
-                'Custom commands are already enabled for this server, buddy.'
+                "Custom commands are already enabled for this server, buddy."
             )
         else:
             guild.is_enabled = True
-            await ctx.send(
-                'Custom commands have been **enabled** for this server'
-            )
+            await ctx.send("Custom commands have been **enabled** for this server")
 
         self.dump_guild(guild)
-    
+
     @cc.command()
     async def disable(self, ctx: Context):
-    
-        '''Disables custom commands for the whole server.'''
+
+        """Disables custom commands for the whole server."""
 
         guild = self.get_guild(ctx.guild.id)
 
         if not guild.is_enabled:
             await ctx.send(
-                'Custom commands are already disabled for this server, dude.'
+                "Custom commands are already disabled for this server, dude."
             )
         else:
             guild.is_enabled = False
-            await ctx.send(
-                'Custom commands have been **disabled** for this server'
-            )
+            await ctx.send("Custom commands have been **disabled** for this server")
 
         self.dump_guild(guild)
 
     @cc.command()
     async def add(self, ctx: Context, *key):
-    
-        '''Adds a key and a reply to your server.'''
+
+        """Adds a key and a reply to your server."""
 
         key = self.construct_key(key)
         guild = self.get_guild(ctx.guild.id)
 
         if len(key) == 0:
-            await ctx.send('Enter the keyword for the custom command...')
+            await ctx.send("Enter the keyword for the custom command...")
 
             key = await self.wait_for(lambda x: x.author == ctx.author, ctx)
             if key is None:
@@ -147,46 +132,42 @@ class Cog(commands.Cog):
             await ctx.send(embed=CustomCommandEmbeds.Add.key_exists(key))
 
             response = await self.wait_for(
-                lambda m: m.author == ctx.author and m.content.lower() in [
-                    'yes', 'no', 'y', 'n'
-                ], 
-                ctx
-                )
+                lambda m: m.author == ctx.author
+                and m.content.lower() in ["yes", "no", "y", "n"],
+                ctx,
+            )
             if response is None:
                 return
-            if response.content.lower() in 'no':
+            if response.content.lower() in "no":
                 await ctx.send(embed=GeneralEmbeds.command_cancelled())
                 return
 
-        await ctx.send('What would you like the reply to be?')
+        await ctx.send("What would you like the reply to be?")
         reply = await self.wait_for(lambda m: m.author == ctx.author, ctx)
 
         if reply is None:
             return
 
         reply = reply.content
-        
+
         if key in guild.replies and reply in guild.replies[key]:
-            await ctx.send(
-                embed = CustomCommandEmbeds.Add.reply_exists(key, reply)
-            )
+            await ctx.send(embed=CustomCommandEmbeds.Add.reply_exists(key, reply))
             return
 
         await ctx.send(embed=CustomCommandEmbeds.Add.confirm(key, reply))
 
         confirm = await self.wait_for(
-            lambda m: m.author == ctx.author and m.content.lower() in [
-                'yes', 'no', 'y', 'n'
-            ], 
-            ctx
+            lambda m: m.author == ctx.author
+            and m.content.lower() in ["yes", "no", "y", "n"],
+            ctx,
         )
 
         if confirm is None:
             return
 
         confirm = confirm.content
-        
-        if confirm.lower() in ['no', 'n']:
+
+        if confirm.lower() in ["no", "n"]:
             await ctx.send(embed=GeneralEmbeds.command_cancelled())
             return
 
@@ -202,21 +183,16 @@ class Cog(commands.Cog):
 
     @cc.command()
     async def remove(self, ctx: Context, *key):
-    
-        '''Removes a reply from a specified key.'''
+
+        """Removes a reply from a specified key."""
 
         key = self.construct_key(key)
         guild = self.get_guild(ctx.guild.id)
 
         if len(key) == 0:
-            await ctx.send(
-                'Enter the keyword from which you want a reply removed...'
-            )
-        
-            key = await self.wait_for(
-                lambda m: m.author == ctx.author,
-                ctx
-            )
+            await ctx.send("Enter the keyword from which you want a reply removed...")
+
+            key = await self.wait_for(lambda m: m.author == ctx.author, ctx)
 
             if key is None:
                 return
@@ -224,51 +200,42 @@ class Cog(commands.Cog):
             key = key.content
 
         if key not in guild.replies:
-            await ctx.send(
-                embed = CustomCommandEmbeds.Remove.keyword_not_found(key)
-            )
+            await ctx.send(embed=CustomCommandEmbeds.Remove.keyword_not_found(key))
             return
 
         await ctx.send(
-            embed = CustomCommandEmbeds.Remove.show_replies(key, guild.replies[key])
+            embed=CustomCommandEmbeds.Remove.show_replies(key, guild.replies[key])
         )
-        reply_index = await self.wait_for(
-            lambda m: m.author == ctx.author,
-            ctx
-        )
+        reply_index = await self.wait_for(lambda m: m.author == ctx.author, ctx)
 
         if reply_index is None:
-            return 
+            return
 
         reply_index = reply_index.content
 
-        try: 
+        try:
             reply_index = int(reply_index)
             reply_index -= 1
         except Exception:
-            await ctx.send(
-                embed = CustomCommandEmbeds.Remove.invalid_index(reply_index)
-            )
+            await ctx.send(embed=CustomCommandEmbeds.Remove.invalid_index(reply_index))
             return
 
         if reply_index >= len(guild.replies[key]):
-            await ctx.send(
-                embed = CustomCommandEmbeds.Remove.invalid_index(reply_index)
-            )
+            await ctx.send(embed=CustomCommandEmbeds.Remove.invalid_index(reply_index))
             return
 
         reply = guild.replies[key][reply_index]
         await ctx.send(embed=CustomCommandEmbeds.Remove.confirm(key, reply))
 
         response = await self.wait_for(
-            lambda m: m.author == ctx.author and m.content.lower() in [
-                'yes', 'y', 'no', 'n'
-            ],
-            ctx
+            lambda m: m.author == ctx.author
+            and m.content.lower() in ["yes", "y", "no", "n"],
+            ctx,
         )
 
-        if response is None: return
-        if response.content.lower() in ['n', 'no']:
+        if response is None:
+            return
+        if response.content.lower() in ["n", "no"]:
             await ctx.send(embed=GeneralEmbeds.command_cancelled())
             return
 
@@ -283,28 +250,23 @@ class Cog(commands.Cog):
 
     @cc.command()
     async def toggle(self, ctx: Context, *key):
-        
-        '''Toggles a key and all its replies on or off.'''
+
+        """Toggles a key and all its replies on or off."""
 
         key = self.construct_key(key)
         guild = self.get_guild(ctx.guild.id)
 
         if len(key) == 0:
-            await ctx.send('Enter the key you want to toggle on/off.')
-            key = await self.wait_for(
-                lambda m: m.author == ctx.author, 
-                ctx
-            )
+            await ctx.send("Enter the key you want to toggle on/off.")
+            key = await self.wait_for(lambda m: m.author == ctx.author, ctx)
 
             if key is None:
-                return 
+                return
 
             key = key.content
 
         if key not in guild.replies:
-            await ctx.send(
-                embed = CustomCommandEmbeds.Toggle.keyword_not_found(key)
-            )
+            await ctx.send(embed=CustomCommandEmbeds.Toggle.keyword_not_found(key))
             return
 
         if key in guild.active_keys:
@@ -313,11 +275,17 @@ class Cog(commands.Cog):
         else:
             guild.active_keys.append(key)
             await ctx.send(embed=CustomCommandEmbeds.Toggle.toggled_on(key))
-    
-    @cc.command(aliases=['list'])
+
+    @cc.command(aliases=["list"])
     async def show(self, ctx: Context, *key):
-    
-        '''Shows list of all the keys and replies.'''
+
+        """Shows list of all the keys and replies."""
+
+        key = self.construct_key(key)
+        guild = self.get_guild()
+
+        if len(key) == 0:
+            await ctx.send(embed=CustomCommandEmbeds.Show.show_all())
 
 
 def setup(bot):
