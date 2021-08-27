@@ -282,10 +282,10 @@ class Cog(commands.Cog):
         """Shows list of all the keys and replies."""
 
         key = self.construct_key(key)
-        guild = self.get_guild()
+        guild = self.get_guild(ctx.guild.id)
 
         if len(key) == 0:
-            await ctx.send(embed=CustomCommandEmbeds.Show.show_all())
+            await ctx.send(embed=CustomCommandEmbeds.Show.show_all(guild))
 
 
 def setup(bot):

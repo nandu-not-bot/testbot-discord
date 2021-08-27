@@ -149,7 +149,7 @@ class CustomCommandEmbeds:
 
             for command in guild.replies:
                 replies = ''.join(
-                    f'{guild.replies[command].index(reply) + 1} : `{reply}`'
+                    f'{guild.replies[command].index(reply) + 1} : `{reply}` \n'
                     for reply in guild.replies[command]
                 )
 
