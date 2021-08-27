@@ -1,108 +1,147 @@
+"""Embeds For Chitti Boi"""
+
 import discord
 
 PURPLE = 0x510490
 RED = 0xff0000
 GREEN = 0x00ff00
 
-timeout_command_cancel = discord.Embed(
-    title = 'Oops!',
-    description = "You didn't respond in time!",
-    footer = 'Every response has a 60 second timeout unless mentioned otherwise.',
-    color = RED
-)
+class GeneralEmbeds:
+    """General Embeds"""
 
-command_cancel = discord.Embed(
-    title = 'Okey-doke!',
-    description = 'Alrighty! Command cancelled.',
-    footer = 'Redo the command to do it again.',
-    color = RED
-)
-
-
-# Custom Command
-
-    # cc add
-
-def keyword_added(keyword, reply, prefix):
-    return discord.Embed(
-        title = 'Keyword Added!',
-        description = f'Reply `{reply}` has been added to keyword `{keyword}`.',
-        footer = f'Use command "{prefix}help cc" for help.',
-        color = GREEN
-    )
-
-def confirm_add(keyword, reply):
-    return discord.Embed(
-        title = 'You sure?',
-        description = f'Are you sure you want to add response, `{reply}`, to key `{keyword}` (y/n)',
-        footer = f'Respond in "y" or "n"',
-        color = PURPLE
-    )
-
-def key_exists(keyword):
-    return discord.Embed(
-        title = 'Hold on!',
-        description = f'Keyword `{keyword}` already exists! Are you sure you want to add a reply to it? (y/n)',
-        footer = 'Respond in "y" or "n"',
-        color = PURPLE
-    )
-
-def reply_exists(keyword, reply):
-    return discord.Embed(
-        title = 'Reply Exists.',
-        description = f'Reply `{reply}` already exists for keyword `{keyword}`. Command cancelled.',
-        footer = f'Redo the command to do it again.',
-        color = RED
-    )
-
+    @staticmethod
+    def timeout():
+        return discord.Embed(
+            title = 'Oops!',
+            description = "You didn't respond in time!",
+            color = RED
+        )
     
-    # cc remove
-
-def keyword_not_found(keyword):
-    return discord.Embed(
-        title = 'Keyword not found!'.title(),
-        description = f'Keyword, `{keyword}` not found! Bummer! Command Cancelled.',
-        footer = 'Redo the command to try again.',
-        color = RED
-    )
-
-def show_replies(keyword: str, replies: list):
-    embed = discord.Embed(
-        title = f'Replies for "{keyword}"',
-        descrption = f'Enter index number of reply to be removed: ',
-        footer = 'Respond with "c" to cancel command.',
-        color = PURPLE
-    )
-
-    for reply in replies:
-        embed.add_field(
-            name = f'{replies.index(reply) + 1}:',
-            value = f'{reply}',
-            inline = False
+    @staticmethod
+    def command_cancelled():
+        return discord.Embed(
+            title = 'Okey-doke!',
+            description = 'Alrighty! Command cancelled.',
+            color = RED
         )
 
-    return embed
+class CustomCommandEmbeds:
+    """Embeds for custom commands"""
 
-def invalid_index(index: str):
-    return discord.Embed(
-        title = f'Invalid Index!',
-        description = f'Index `{index}` is invalid! Command cancelled.',
-        footer = 'Redo the command to try again.',
-        color = RED
-    )
+    class Add:
+        """cc add"""
 
-def remove_reply_confirm(keyword: str, reply: str):
-    return discord.Embed(
-        title = 'Are you sure?',
-        description = 
-            f'Are you sure you want to remove response, `{reply}` from keyword, `{keyword}`. (y/n)',
-        footer = 'Respond with "y" for yes or "n" for no.',
-        color = PURPLE
-    )
+        @staticmethod
+        def key_exists(keyword):
+            return discord.Embed(
+                title = 'Hold on!',
+                description = 
+                    f'Keyword `{keyword}` already exists! Are you sure you want to add a reply to it? (y/n)',
+                color = PURPLE
+            )
 
-def reply_removed(keyword: str, reply: str):
-    return discord.Embed(
-        title = f'Response Removed!',
-        description = f'Response `{reply}` has been removed from keyword `{keyword}`.',
-        color = GREEN
-    )
+        @staticmethod
+        def reply_exists(keyword, reply):
+            return discord.Embed(
+                title = 'Reply Exists.',
+                description = 
+                    f'Reply `{reply}` already exists for keyword `{keyword}`. Command cancelled.',
+                color = RED
+            )
+
+        @staticmethod
+        def confirm(keyword, reply):
+            return discord.Embed(
+                title = 'You sure?',
+                description = 
+                    f'Are you sure you want to add response, `{reply}`, to key `{keyword}` (y/n)',
+                color = PURPLE
+            )
+
+        @staticmethod
+        def added(keyword, reply):
+            return discord.Embed(
+                title = 'Keyword Added!',
+                description = f'Reply `{reply}` has been added to keyword `{keyword}`.',
+                color = GREEN
+            )
+
+    class Remove:
+        """cc remove"""
+
+        @staticmethod
+        def keyword_not_found(keyword):
+            return discord.Embed(
+                title = 'Keyword not found!'.title(),
+                description = f'Keyword, `{keyword}` not found! Bummer! Command Cancelled.',
+                color = RED
+            )
+
+        @staticmethod
+        def show_replies(keyword: str, replies: list):
+            embed = discord.Embed(
+                title = f'Replies for "{keyword}"',
+                description = f'Enter index number of reply to be removed: ',
+                color = PURPLE
+            )
+
+            for reply in replies:
+                embed.add_field(
+                    name = f'{replies.index(reply) + 1}:',
+                    value = f'{reply}',
+                    inline = False
+                )
+
+            return embed
+
+        @staticmethod
+        def invalid_index(index: str):
+            return discord.Embed(
+                title = f'Invalid Index!',
+                description = f'Index `{index}` is invalid! Command cancelled.',
+                color = RED
+            )
+
+        @staticmethod
+        def confirm(keyword: str, reply: str):
+            return discord.Embed(
+                title = 'Are you sure?',
+                description = 
+                    f'Are you sure you want to remove response, `{reply}` from keyword, `{keyword}`. (y/n)',
+                color = PURPLE
+            )
+
+        @staticmethod
+        def removed(keyword: str, reply: str):
+            return discord.Embed(
+                title = f'Response Removed!',
+                description = f'Response `{reply}` has been removed from keyword `{keyword}`.',
+                color = GREEN
+            )
+
+    class Toggle:
+        """cc toggle"""
+
+        @staticmethod
+        def keyword_not_found(keyword):
+            return discord.Embed(
+                title = 'Keyword not found!',
+                description = f'Keyword `{keyword}` not found! Aw man. Command cancelled.',
+                color = RED
+            )
+
+        @staticmethod
+        def toggled_off(keyword):
+            return discord.Embed(
+                title = 'Toggled Off!',
+                description = f'Keyword `{keyword}` has been toggled **OFF** for this server.',
+                color = GREEN
+            )
+
+        @staticmethod
+        def toggled_on(keyword):
+            return discord.Embed(
+                title = 'Toggled On!',
+                description = f'Keyword `{keyword}` has been toggled **ON** for this server.',
+                color = GREEN
+            )
