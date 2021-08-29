@@ -17,12 +17,12 @@ def get_prefix(bot, message):
 
 # All the extenstions or cogs to be loaded into Chitti.
 initial_extensions = [
-    'misc', 
-    'mth.main', 
-    'listener.main', 
+    'misc',
+    'mth.main',
+    'cc.main',
+    'ms.main', 
     # 'rps.main', 
     # 'ttt.main', 
-    # 'ranking.ranking', 
     # 'ask.ask', 
     # 'suggestion_react.react'
     # 'help', 

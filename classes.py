@@ -10,6 +10,9 @@ class Member:
     display_name: str 
     score: int = 0
 
+    def get_avatar_url(self, bot, guild):
+        return bot.get_guild(guild.id).get_member(self.id).avatar_url
+
 @dataclass
 class Guild:
     
@@ -21,9 +24,8 @@ class Guild:
     is_enabled: bool = True
 
     # For messaging scores
-    members: List[Member] = field(default_factory=list)
+    members: dict = field(default_factory=dict)
     excluded_channels: List[str] = field(default_factory=list)
 
     def get_leaderboard(self):
         return sorted(self.members, key=lambda member: member.score)
-
