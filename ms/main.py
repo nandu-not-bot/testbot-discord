@@ -1,8 +1,6 @@
 from dataclasses import asdict
-from re import L
 
 import discord
-from discord.ext.commands import context
 from replit import db
 from discord.ext import commands
 from discord.ext.commands.context import Context
@@ -142,14 +140,13 @@ class Cog(commands.Cog):
             member = self.find_member(ctx, mention)
 
         pfp_url = member.get_avatar_url(self.bot, self.get_guild(ctx.guild.id))
-        leaderboard = self.get_guild(ctx.guild.id).get_leaderboard()
 
         await ctx.reply(
             embed=MessagingScoreEmbeds.Score.show_score(
                 member.display_name,
                 pfp_url,
                 member.score,
-                leaderboard.index(asdict(member)) + 1,
+                member.get_rank(self.get_guild(ctx.guild.id)),
             ),
             mention_author=False,
         )
@@ -161,6 +158,8 @@ class Cog(commands.Cog):
 
         if page is None:
             page = 1
+
+        guild = self.get_guild(ctx.guild.id, page)
 
     # Exclude
     @ms.command()

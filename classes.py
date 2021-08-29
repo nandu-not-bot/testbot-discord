@@ -1,19 +1,5 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 from typing import List
-
-
-@dataclass
-class Member:
-
-    id: int
-
-    # For messaging scores
-    display_name: str
-    score: int = field(default=0, compare=False)
-
-    def get_avatar_url(self, bot, guild):
-        return bot.get_guild(guild.id).get_member(self.id).avatar_url
-
 
 @dataclass
 class Guild:
@@ -35,4 +21,23 @@ class Guild:
         )
         sorted_members.reverse()
 
+<<<<<<< Updated upstream
         return [{**self.members[member]} for member in sorted_members]
+=======
+        return [self.members[member] for member in sorted_members]
+
+@dataclass
+class Member:
+
+    id: int
+
+    # For messaging scores
+    display_name: str
+    score: int = field(default=0, compare=False)
+
+    def get_avatar_url(self, bot, guild):
+        return bot.get_guild(guild.id).get_member(self.id).avatar_url
+
+    def get_rank(self, guild: Guild):
+        return guild.get_leaderboard().index(asdict(self)) + 1
+>>>>>>> Stashed changes
