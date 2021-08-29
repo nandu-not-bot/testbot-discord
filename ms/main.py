@@ -34,9 +34,9 @@ class Cog(commands.Cog):
     @staticmethod
     def format_rank(rank: int) -> str:
         rank = str(rank)
-        if len(rank) is 1:
+        if len(rank) == 1:
             return f"00{rank}"
-        elif len(rank) is 2:
+        elif len(rank) == 2:
             return f"0{rank}"
         else:
             return rank

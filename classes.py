@@ -32,6 +32,7 @@ class Guild:
     def get_leaderboard(self) -> list:
         sorted_members = sorted(
             self.members, key=lambda member: self.members[member]["score"]
-        ).reverse()
+        )
+        sorted_members.reverse()
 
-        return [self.members[member] for member in sorted_members]
+        return [{**self.members[member]} for member in sorted_members]
