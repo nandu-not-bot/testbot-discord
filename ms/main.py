@@ -40,12 +40,12 @@ class Cog(commands.Cog):
 
     def get_member(self, guild: Guild, id: int, display_name: str) -> Member:
         for member in guild.members:
-            if member["id"] == id:
-                member = Member(**member)
+            if guild.members[member]["id"] == id:
+                member = Member(**guild.members[member])
                 member.display_name = display_name
                 return member
 
-        self.dump(guild, member)
+        self.dump(guild, Member(id, display_name))
         return Member(id, display_name)
 
     # Dump guild and member
@@ -109,18 +109,19 @@ class Cog(commands.Cog):
         """Shows score of user if mentioned else shows score of invoker."""
 
         if mention is None or self.find_member(ctx, mention) is None:
-            member = self.get_member(ctx.author.id)
+            member = self.get_member(self.get_guild(ctx.guild.id), ctx.author.id, ctx.author.display_name)
         else:
             member = self.find_member(ctx, mention)
 
         pfp_url = member.get_avatar_url(self.bot, self.get_guild(ctx.guild.id))
+        leaderboard = self.get_guild(ctx.guild.id).get_leaderboard()
 
         await ctx.send(
             embed=MessagingScoreEmbeds.Score.show_score(
                 member.display_name,
                 pfp_url,
                 member.score,
-                self.get_guild(ctx.guild.id).get_leaderboard().index(member) + 1,
+                leaderboard.index(str(member.id)) + 1,
             )
         )
 

@@ -8,7 +8,7 @@ class Member:
     
     # For messaging scores
     display_name: str 
-    score: int = 0
+    score: int = field(default = 0, compare = False)
 
     def get_avatar_url(self, bot, guild):
         return bot.get_guild(guild.id).get_member(self.id).avatar_url
@@ -28,4 +28,4 @@ class Guild:
     excluded_channels: List[str] = field(default_factory=list)
 
     def get_leaderboard(self):
-        return sorted(self.members, key=lambda member: member.score)
+        return sorted(self.members, key=lambda member: self.members[member]['score'])
