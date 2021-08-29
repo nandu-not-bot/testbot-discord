@@ -1,22 +1,24 @@
 from dataclasses import dataclass, field
 from typing import List
 
+
 @dataclass
 class Member:
-    
-    id: int 
-    
+
+    id: int
+
     # For messaging scores
-    display_name: str 
-    score: int = field(default = 0, compare = False)
+    display_name: str
+    score: int = field(default=0, compare=False)
 
     def get_avatar_url(self, bot, guild):
         return bot.get_guild(guild.id).get_member(self.id).avatar_url
 
+
 @dataclass
 class Guild:
-    
-    id: int 
+
+    id: int
 
     # For custom commands
     replies: dict = field(default_factory=dict)
@@ -27,5 +29,9 @@ class Guild:
     members: dict = field(default_factory=dict)
     excluded_channels: List[str] = field(default_factory=list)
 
-    def get_leaderboard(self):
-        return sorted(self.members, key=lambda member: self.members[member]['score'])
+    def get_leaderboard(self) -> list:
+        sorted_members = sorted(
+            self.members, key=lambda member: self.members[member]["score"]
+        ).reverse()
+
+        return [self.members[member] for member in sorted_members]

@@ -30,6 +30,32 @@ class Cog(commands.Cog):
         mention = mention.replace("!", "")
         return mention
 
+    # Make rank into a 000 format
+    @staticmethod
+    def format_rank(rank: int) -> str:
+        rank = str(rank)
+        if len(rank) is 1:
+            return f"00{rank}"
+        elif len(rank) is 2:
+            return f"0{rank}"
+        else:
+            return rank
+
+    # Add in k and M and all that to the score
+    def add_suffix(score: int) -> str:
+        if score >= 1000 and score < 10000:
+            return f"{str(round(score/100, 1))}k"
+        elif score >= 10000 and score < 1000000:
+            return f"{str(score//100)}k"
+        elif score >= 1000000:
+            return f"{str(round(score/100000, 1))}M"
+
+    # Make score look nice lol
+    @staticmethod
+    def format_score(score: int) -> str:
+        score = str(score)
+        return f'{score}{" "*(7-len(score))}'
+
     # Get guild and member
     @staticmethod
     def get_guild(id: int) -> Guild:
@@ -109,26 +135,32 @@ class Cog(commands.Cog):
         """Shows score of user if mentioned else shows score of invoker."""
 
         if mention is None or self.find_member(ctx, mention) is None:
-            member = self.get_member(self.get_guild(ctx.guild.id), ctx.author.id, ctx.author.display_name)
+            member = self.get_member(
+                self.get_guild(ctx.guild.id), ctx.author.id, ctx.author.display_name
+            )
         else:
             member = self.find_member(ctx, mention)
 
         pfp_url = member.get_avatar_url(self.bot, self.get_guild(ctx.guild.id))
         leaderboard = self.get_guild(ctx.guild.id).get_leaderboard()
 
-        await ctx.send(
+        await ctx.reply(
             embed=MessagingScoreEmbeds.Score.show_score(
                 member.display_name,
                 pfp_url,
                 member.score,
-                leaderboard.index(str(member.id)) + 1,
-            )
+                leaderboard.index(asdict(member)) + 1,
+            ),
+            mention_author=False,
         )
 
     # Leaderboard
     @ms.command(aliases=["leaderboard", "board"])
-    async def lb(self, ctx: Context, page: int):
+    async def lb(self, ctx: Context, page: int = None):
         """Shows messaging score leaderboard for the server"""
+
+        if page is None:
+            page = 1
 
     # Exclude
     @ms.command()
