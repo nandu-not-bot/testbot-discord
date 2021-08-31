@@ -213,3 +213,14 @@ class MessagingScoreEmbeds:
                 value=f"Your rank in this server is `{rank}`",
             )
             return embed
+
+    class Lb:
+        """ms lb"""
+
+        @staticmethod
+        def page_not_found():
+            return discord.Embed(
+                title = 'Where is that...?',
+                description = 'Page not found!',
+                color = RED
+            )

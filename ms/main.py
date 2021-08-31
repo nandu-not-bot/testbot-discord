@@ -54,6 +54,18 @@ class Cog(commands.Cog):
         score = str(score)
         return f'{score}{" "*(7-len(score))}'
 
+    # Get medal
+    @staticmethod
+    def get_medal(rank: int):
+        if rank == 1:
+            return "🥇"
+        elif rank == 2:
+            return "🥈"
+        elif rank == 3:
+            return "🥉"
+
+        return ""
+
     # Get guild and member
     @staticmethod
     def get_guild(id: int) -> Guild:
@@ -153,13 +165,37 @@ class Cog(commands.Cog):
 
     # Leaderboard
     @ms.command(aliases=["leaderboard", "board"])
-    async def lb(self, ctx: Context, page: int = None):
+    async def lb(self, ctx: Context, page_no: int = None):
         """Shows messaging score leaderboard for the server"""
 
-        if page is None:
-            page = 1
+        if page_no is None:
+            page_no = 1
 
-        guild = self.get_guild(ctx.guild.id, page)
+        guild = self.get_guild(ctx.guild.id)
+        leaderboard, pages = guild.get_leaderboard(page_no)
+        page = [
+            f'{self.format_rank(Member(**member).get_rank(guild))} ⫶ {self.format_score(self.add_suffix(member["score"]))} ⫶ {member["display_name"]} {self.get_medal(Member(**member).get_rank(guild))}'
+            for member in leaderboard
+        ]
+
+        if not page:
+            await ctx.reply(embed=MessagingScoreEmbeds.Lb.page_not_found())
+            return
+
+        embed = discord.Embed(
+            title=f"Leaderboard of {ctx.guild.name}",
+            description="Messaging scores leaderboard for this server.",
+        )
+        embed.add_field(
+            name=f"RANK ⫶ SCORE ⫶ NAME",
+            value="".join("`" + member + "`\n" for member in leaderboard),
+        )
+        embed.set_footer(
+            text=f"Currently showing page ({page}/{pages}) \n Use {ctx.prefix}ms {ctx.command} <page no.> to show a specific page."
+        )
+
+        await ctx.reply(embed=embed)
+        return
 
     # Exclude
     @ms.command()

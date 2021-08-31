@@ -1,5 +1,7 @@
+import math
 from dataclasses import dataclass, field, asdict
 from typing import List
+
 
 @dataclass
 class Guild:
@@ -15,16 +17,23 @@ class Guild:
     members: dict = field(default_factory=dict)
     excluded_channels: List[str] = field(default_factory=list)
 
-    def get_leaderboard(self) -> list:
+    def get_leaderboard(self, page: int = None) -> list:
         sorted_members = sorted(
             self.members, key=lambda member: self.members[member]["score"]
         )
         sorted_members.reverse()
 
-<<<<<<< Updated upstream
-        return [{**self.members[member]} for member in sorted_members]
-=======
-        return [self.members[member] for member in sorted_members]
+        leaderboard = [
+                {**self.members[member]}
+                for member in sorted_members
+                if member["score"] > 0
+            ]
+
+        if page is None:
+            return leaderboard
+        else:
+            return leaderboard[page * 10 : page * 10 + 10], math.ceil(len(leaderboard)/10)
+
 
 @dataclass
 class Member:
@@ -39,5 +48,8 @@ class Member:
         return bot.get_guild(guild.id).get_member(self.id).avatar_url
 
     def get_rank(self, guild: Guild):
-        return guild.get_leaderboard().index(asdict(self)) + 1
->>>>>>> Stashed changes
+        return (
+            (guild.get_leaderboard().index(asdict(self)) + 1)
+            if asdict(self) in guild.get_leaderboard()
+            else 0
+        )
