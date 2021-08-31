@@ -1,4 +1,3 @@
-import random
 from dataclasses import asdict
 
 import discord
@@ -44,11 +43,11 @@ class Cog(commands.Cog):
     @staticmethod
     def add_suffix(score: int) -> str:
         if score >= 1000 and score < 10000:
-            return f"{str(round(score/100, 1))}k"
+            return f"{str(round(score/1000, 1))}k"
         elif score >= 10000 and score < 1000000:
-            return f"{str(score//100)}k"
+            return f"{str(score//1000)}k"
         elif score >= 1000000:
-            return f"{str(round(score/100000, 1))}M"
+            return f"{str(round(score/1000000, 1))}M"
         else:
             return str(score)
 
@@ -111,7 +110,9 @@ class Cog(commands.Cog):
         ):
             return
         else:
-            return self.get_member(guild, member_id, ctx.guild.get_member(member_id).display_name)
+            return self.get_member(
+                guild, member_id, ctx.guild.get_member(member_id).display_name
+            )
 
     # COMMANDS
 
@@ -137,9 +138,6 @@ class Cog(commands.Cog):
     @commands.group(aliases=["tier"], invoke_without_command=True)
     async def ms(self, ctx: Context):
         """Parent Command For Messaging Scores Subcommands"""
-
-        for _ in range(50):
-            self.dump(self.get_guild(ctx.guild.id), Member(id=random.randint(1, 1000000), display_name='testdummy', score=random.randint(0, 5000000)))
 
         await ctx.reply(
             "Uh oh! Cannot use command without a valid subcommand!",
@@ -186,7 +184,9 @@ class Cog(commands.Cog):
         ]
 
         if not page:
-            await ctx.reply(embed=MessagingScoreEmbeds.Lb.page_not_found())
+            await ctx.reply(
+                embed=MessagingScoreEmbeds.Lb.page_not_found(), mention_author=False
+            )
             return
 
         embed = discord.Embed(
@@ -201,28 +201,167 @@ class Cog(commands.Cog):
             text=f"Currently showing page ({page_no}/{pages}) \n Use {ctx.prefix}{ctx.command} <page no.> to show a specific page."
         )
 
-        await ctx.reply(embed=embed)
+        await ctx.reply(embed=embed, mention_author=False)
         return
 
     # Exclude
     @ms.command()
-    async def exclude(self, ctx: Context, mention):
+    @commands.has_permissions(administrator = True)
+    async def exclude(self, ctx: Context, channel= None):
         """Excludes a channel from adding up messaginf scores."""
+
+        guild = self.get_guild(ctx.guild.id)
+
+        if channel is None:
+            await ctx.send(f'❌ Mention a channel at the end of the command! Eg: `{ctx.prefix}{ctx.command} #channel-name`')
+            return
+
+        if "<#" in channel and ">" in channel:
+            channel = ctx.guild.get_channel(int(self.decode_mention(channel)))
+
+        else:
+            await ctx.send("❌ Channel not found.")
+            return
+
+        if channel.id in guild.excluded_channels:
+            await ctx.send(
+                f"✅ Channel {channel.mention} is already excluded from coutning scores."
+            )
+            return
+
+        guild.excluded_channels.append(channel.id)
+
+        await ctx.send(
+            f"✅ Messages in channel {channel.mention} will no longer add your score."
+        )
+
+        self.dump(guild)
+
+    @exclude.error
+    async def exclude_error(self, ctx: Context, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("❌ You do not have the clearance level to use this command.")
+        if isinstance(error, commands.CommandInvokeError):
+            await ctx.send("❌ Channel not found.")
 
     # Include
     @ms.command()
-    async def include(self, ctx: Context, mention):
+    async def include(self, ctx: Context, channel = None):
         """Includes a channel for adding up messaging scores."""
+
+        guild = self.get_guild(ctx.guild.id)
+
+        if channel is None:
+            await ctx.send(f'❌ Mention a channel at the end of the command! Eg: `{ctx.prefix}{ctx.command} #channel-name`')
+
+        if "<#" in channel and ">" in channel:
+            channel = ctx.guild.get_channel(int(self.decode_channel(channel)))
+        else:
+            await ctx.send("❌ Channel not found.")
+            return
+
+        if channel.id not in guild.excluded_channels:
+            await ctx.send(
+                f"✅ Channel {channel.mention} is already included from counting scores."
+            )
+            return
+
+        guild.excluded_channels.remove(channel.id)
+
+        await ctx.send(
+            f"✅ Messages in channel {channel.mention} will now add your score."
+        )
+
+        self.dump(guild)
+
+    @include.error
+    async def include_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("❌ You do not have the clearance level to use this command.")
+        if isinstance(error, commands.CommandInvokeError):
+            await ctx.send("❌ Channel not found.")
 
     # Excluded
     @ms.command(alisases=["list"])
     async def excluded(self, ctx: Context):
         """Shows channels excluded from messaging scores."""
 
+        guild = self.get_guild(ctx.guild.id)
+
+        embed = discord.Embed(
+            title="Excluded Channels",
+            description="List of channels excluded from increasing messaging scores.",
+            color=0x510490,
+        )
+        if len(guild.excluded_channels) > 0:
+            excluded_channels = "".join(
+                f'<#{channel}>' + "\n" for channel in guild.excluded_channels
+            )
+
+            embed.add_field(name="List:", value=excluded_channels)
+        else:
+            embed.add_field(name="List:", value="No channels are excluded.")
+
+        await ctx.reply(embed=embed, mention_author=False)
+        return
+
     # Deduct
     @ms.command()
-    async def deduct(self, ctx: Context, mention):
+    @commands.has_permission(administrator=True)
+    async def deduct(self, ctx: Context, mention = None):
         """Deducts points from a member."""
+
+        guild = self.get_guild(ctx.guild.id)
+
+        if mention is None:
+            await ctx.send(f"Mention the member you would like to take points from.")
+            mention = await self.bot.wait_for("message")
+            mention = mention.content
+
+        if ctx.guild.get_member(self.decode_menion(mention)) is None:
+            await ctx.send(f'❌ Member {mention} not found!')
+            return
+
+        member = self.get_member(guild, ctx.author.id, ctx.author.display_name)
+
+        while True:
+            await ctx.send(
+                f"How many points would you like to deduct from {member.mention}?"
+            )
+            take = await self.bot.wait_for("message")
+            try:
+                take = int(take.content)
+                break
+            except:
+                await ctx.send("❌ Please enter a valid number.")
+
+        def yn_check(m):
+            return m.author == ctx.author and m.content.lower() in ["y", "n"]
+
+        await ctx.send(
+            f":interrobang: Are you sure you want to deduce `{take}` points from {member.mention}? (y/n)"
+        )
+        response = await self.bot.wait_for("message", check=yn_check)
+
+        if response.content.lower() == "n":
+            await response.reply("❌ Command cancelled.")
+            return        
+
+        take = take if take > 0 else 0 - take
+
+        if member.score - take < 0:
+            member.score = 0
+        else:
+            member.score -= take
+
+        await ctx.send(
+            f"✅ {member.mention}'s score is now `{member.score}` after {ctx.author.mention} deduced `{take}` points."
+        )
+
+    @deduct.error
+    async def deduct_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("❌ You do not have the clearance level to use this command.")
 
 
 def setup(bot):
