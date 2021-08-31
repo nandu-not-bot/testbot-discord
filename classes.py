@@ -26,12 +26,15 @@ class Guild:
         leaderboard = [
                 {**self.members[member]}
                 for member in sorted_members
-                if member["score"] > 0
             ]
 
         if page is None:
             return leaderboard
         else:
+            page -= 1
+            leaderboard = [
+                {**member} for member in leaderboard if member['score'] > 0
+            ]
             return leaderboard[page * 10 : page * 10 + 10], math.ceil(len(leaderboard)/10)
 
 
@@ -48,8 +51,10 @@ class Member:
         return bot.get_guild(guild.id).get_member(self.id).avatar_url
 
     def get_rank(self, guild: Guild):
+        self = asdict(self)
+        leaderboard = guild.get_leaderboard()
         return (
-            (guild.get_leaderboard().index(asdict(self)) + 1)
-            if asdict(self) in guild.get_leaderboard()
+            (leaderboard.index(self) + 1)
+            if self in guild.get_leaderboard()
             else 0
         )

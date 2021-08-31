@@ -1,3 +1,4 @@
+import random
 from dataclasses import asdict
 
 import discord
@@ -40,6 +41,7 @@ class Cog(commands.Cog):
             return rank
 
     # Add in k and M and all that to the score
+    @staticmethod
     def add_suffix(score: int) -> str:
         if score >= 1000 and score < 10000:
             return f"{str(round(score/100, 1))}k"
@@ -47,6 +49,8 @@ class Cog(commands.Cog):
             return f"{str(score//100)}k"
         elif score >= 1000000:
             return f"{str(round(score/100000, 1))}M"
+        else:
+            return str(score)
 
     # Make score look nice lol
     @staticmethod
@@ -107,7 +111,7 @@ class Cog(commands.Cog):
         ):
             return
         else:
-            return self.get_member(guild, member_id, ctx.author.display_name)
+            return self.get_member(guild, member_id, ctx.guild.get_member(member_id).display_name)
 
     # COMMANDS
 
@@ -133,6 +137,9 @@ class Cog(commands.Cog):
     @commands.group(aliases=["tier"], invoke_without_command=True)
     async def ms(self, ctx: Context):
         """Parent Command For Messaging Scores Subcommands"""
+
+        for _ in range(50):
+            self.dump(self.get_guild(ctx.guild.id), Member(id=random.randint(1, 1000000), display_name='testdummy', score=random.randint(0, 5000000)))
 
         await ctx.reply(
             "Uh oh! Cannot use command without a valid subcommand!",
@@ -188,10 +195,10 @@ class Cog(commands.Cog):
         )
         embed.add_field(
             name=f"RANK ⫶ SCORE ⫶ NAME",
-            value="".join("`" + member + "`\n" for member in leaderboard),
+            value="".join("`" + member + "`\n" for member in page),
         )
         embed.set_footer(
-            text=f"Currently showing page ({page}/{pages}) \n Use {ctx.prefix}ms {ctx.command} <page no.> to show a specific page."
+            text=f"Currently showing page ({page_no}/{pages}) \n Use {ctx.prefix}{ctx.command} <page no.> to show a specific page."
         )
 
         await ctx.reply(embed=embed)
