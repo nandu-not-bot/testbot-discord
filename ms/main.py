@@ -253,9 +253,10 @@ class Cog(commands.Cog):
 
         if channel is None:
             await ctx.send(f'❌ Mention a channel at the end of the command! Eg: `{ctx.prefix}{ctx.command} #channel-name`')
+            return
 
         if "<#" in channel and ">" in channel:
-            channel = ctx.guild.get_channel(int(self.decode_channel(channel)))
+            channel = ctx.guild.get_channel(int(self.decode_mention(channel)))
         else:
             await ctx.send("❌ Channel not found.")
             return
@@ -307,7 +308,7 @@ class Cog(commands.Cog):
 
     # Deduct
     @ms.command()
-    @commands.has_permission(administrator=True)
+    @commands.has_permissions(administrator=True)
     async def deduct(self, ctx: Context, mention = None):
         """Deducts points from a member."""
 
@@ -318,11 +319,13 @@ class Cog(commands.Cog):
             mention = await self.bot.wait_for("message")
             mention = mention.content
 
-        if ctx.guild.get_member(self.decode_menion(mention)) is None:
+        member = ctx.guild.get_member(int(self.decode_mention(mention)))
+
+        if ctx.guild.get_member(int(self.decode_mention(mention))) is None:
             await ctx.send(f'❌ Member {mention} not found!')
             return
 
-        member = self.get_member(guild, ctx.author.id, ctx.author.display_name)
+        member = self.get_member(guild, member.id, member.display_name)
 
         while True:
             await ctx.send(
@@ -357,6 +360,8 @@ class Cog(commands.Cog):
         await ctx.send(
             f"✅ {member.mention}'s score is now `{member.score}` after {ctx.author.mention} deduced `{take}` points."
         )
+
+        self.dump(guild, member)
 
     @deduct.error
     async def deduct_error(self, ctx, error):
