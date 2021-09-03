@@ -47,6 +47,10 @@ class Cog(commands.Cog):
                     value=''.join(f'`{alias}`, ' for alias in self.data['commands'][command]['aliases'])
                 )
 
+            embed.set_footer(
+                text='DO NOT use `<>`, `[]` or `...` when using the command.\n<> = required, [] = optional, ... = infinitly continues'
+            )
+
         await ctx.send(embed=embed)
 
 def setup(bot):
