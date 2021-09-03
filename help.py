@@ -11,7 +11,7 @@ class Cog(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        with open("help.json", "w") as file:
+        with open("help.json", "r") as file:
             self.data = json.load(file)
 
     @commands.command(aliases=['h'])
@@ -25,7 +25,7 @@ class Cog(commands.Cog):
             for group in self.data["groups"]:
                 embed.add_field(
                     name = group,
-                    value= ''.join(self.data["groups"]["group"])
+                    value= ''.join(self.data["groups"][group])
                 )
 
         await ctx.send(embed=embed)
