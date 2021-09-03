@@ -41,6 +41,9 @@ class Member:
     display_name: str
     score: int = field(default=0, compare=False)
 
+    # For Games
+    is_playing: bool = False
+
     @property
     def mention(self):
         return f'<@{self.id}>'
