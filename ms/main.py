@@ -134,18 +134,9 @@ class Cog(commands.Cog):
 
         self.dump(guild, member)
 
-    # Parent
-    @commands.group(aliases=["tier"], invoke_without_command=True)
-    async def ms(self, ctx: Context):
-        """Parent Command For Messaging Scores Subcommands"""
-
-        await ctx.reply(
-            "Uh oh! Cannot use command without a valid subcommand!",
-            mention_author=False,
-        )
 
     # Score
-    @ms.command()
+    @commands.command(aliases=["s", "rank"])
     async def score(self, ctx: Context, mention: str = None):
         """Shows score of user if mentioned else shows score of invoker."""
 
@@ -169,7 +160,7 @@ class Cog(commands.Cog):
         )
 
     # Leaderboard
-    @ms.command(aliases=["leaderboard", "board"])
+    @commands.command(aliases=["leaderboard", "board", "ranklist", "l"])
     async def lb(self, ctx: Context, page_no: int = None):
         """Shows messaging score leaderboard for the server"""
 
@@ -205,7 +196,7 @@ class Cog(commands.Cog):
         return
 
     # Exclude
-    @ms.command()
+    @commands.command(aliases=["exc"])
     @commands.has_permissions(administrator = True)
     async def exclude(self, ctx: Context, channel= None):
         """Excludes a channel from adding up messaginf scores."""
@@ -245,7 +236,7 @@ class Cog(commands.Cog):
             await ctx.send("❌ Channel not found.")
 
     # Include
-    @ms.command()
+    @commands.command(aliases=['inc'])
     async def include(self, ctx: Context, channel = None):
         """Includes a channel for adding up messaging scores."""
 
@@ -253,10 +244,9 @@ class Cog(commands.Cog):
 
         if channel is None:
             await ctx.send(f'❌ Mention a channel at the end of the command! Eg: `{ctx.prefix}{ctx.command} #channel-name`')
-            return
 
         if "<#" in channel and ">" in channel:
-            channel = ctx.guild.get_channel(int(self.decode_mention(channel)))
+            channel = ctx.guild.get_channel(int(self.decode_channel(channel)))
         else:
             await ctx.send("❌ Channel not found.")
             return
@@ -283,7 +273,7 @@ class Cog(commands.Cog):
             await ctx.send("❌ Channel not found.")
 
     # Excluded
-    @ms.command(alisases=["list"])
+    @commands.command(aliases=["ec", "channels"])
     async def excluded(self, ctx: Context):
         """Shows channels excluded from messaging scores."""
 
@@ -307,8 +297,8 @@ class Cog(commands.Cog):
         return
 
     # Deduct
-    @ms.command()
-    @commands.has_permissions(administrator=True)
+    @commands.command(aliases=["take"])
+    @commands.has_permission(administrator=True)
     async def deduct(self, ctx: Context, mention = None):
         """Deducts points from a member."""
 
@@ -319,13 +309,11 @@ class Cog(commands.Cog):
             mention = await self.bot.wait_for("message")
             mention = mention.content
 
-        member = ctx.guild.get_member(int(self.decode_mention(mention)))
-
-        if ctx.guild.get_member(int(self.decode_mention(mention))) is None:
+        if ctx.guild.get_member(self.decode_menion(mention)) is None:
             await ctx.send(f'❌ Member {mention} not found!')
             return
 
-        member = self.get_member(guild, member.id, member.display_name)
+        member = self.get_member(guild, ctx.author.id, ctx.author.display_name)
 
         while True:
             await ctx.send(
@@ -360,8 +348,6 @@ class Cog(commands.Cog):
         await ctx.send(
             f"✅ {member.mention}'s score is now `{member.score}` after {ctx.author.mention} deduced `{take}` points."
         )
-
-        self.dump(guild, member)
 
     @deduct.error
     async def deduct_error(self, ctx, error):
