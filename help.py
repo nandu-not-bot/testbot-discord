@@ -29,23 +29,22 @@ class Cog(commands.Cog):
                 )
 
         else:
-            command = self.data['commands'][command]
             embed = discord.Embed(
                 title = f'Help: {command}',
                 colour =0xB26EfA
             )
             embed.add_field(
                 name = 'Syntax',
-                value=f'`{ctx.prefix}{command} {command["syntax"]}`'
+                value=f'`{ctx.prefix}{command} {self.data["commands"][command]["syntax"]}`'
             )
             embed.add_field(
                 name="Description",
-                value=command['help']
+                value=self.data['commands'][command]['help']
             )
-            if command['aliases'] != []:
+            if self.data['commands'][command]['aliases'] != []:
                 embed.add_field(
                     name = 'Aliases',
-                    value=''.join(f'`{alias}` ' for alias in command['aliases'])
+                    value=''.join(f'`{alias}`, ' for alias in self.data['commands'][command]['aliases'])
                 )
 
         await ctx.send(embed=embed)
