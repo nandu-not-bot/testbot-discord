@@ -1,37 +1,37 @@
 {
     "groups": {
         "🎮 Fun": [
-            "`ttt` ",
-            "`rps` ",
-            "`ask` "
+            "ttt",
+            "rps",
+            "ask"
         ],
         "➕ Math": [
-            "`add` ",
-            "`sub` ",
-            "`mult` ",
-            "`div` ",
-            "`mean` ",
-            "`median` ",
-            "`mode` "
+            "add",
+            "sub",
+            "mult",
+            "div",
+            "mean",
+            "median",
+            "mode"
         ],
         "🤖 Custom Commands": [
-            "`on` ",
-            "`off` ",
-            "`new` ",
-            "`remove` ",
-            "`toggle` ",
-            "`cc` "
+            "on",
+            "off",
+            "new",
+            "remove",
+            "toggle",
+            "cc"
         ],
         "🥇 Messaging Scores": [
-            "`score` ",
-            "`lb` ",
-            "`exc` ",
-            "`inc` ",
-            "`channels` ",
-            "`take` "
+            "score",
+            "lb",
+            "exc",
+            "inc",
+            "channels",
+            "take"
         ],
         "✨ Misc": [
-            "`coolbot` "
+            "coolbot"
         ]
     },
     "commands": {

@@ -25,7 +25,27 @@ class Cog(commands.Cog):
             for group in self.data["groups"]:
                 embed.add_field(
                     name = group,
-                    value= ''.join(self.data["groups"][group])
+                    value= ''.join(f"`{c}` " for c in self.data["groups"][group])
+                )
+
+        else:
+            command = self.data['commands'][command]
+            embed = discord.Embed(
+                title = f'Help: {command}',
+                colour =0xB26EfA
+            )
+            embed.add_field(
+                name = 'Syntax',
+                value=f'`{ctx.prefix}{command} {command["syntax"]}`'
+            )
+            embed.add_field(
+                name="Description",
+                value=command['help']
+            )
+            if command['aliases'] != []:
+                embed.add_field(
+                    name = 'Aliases',
+                    value=''.join(f'`{alias}` ' for alias in command['aliases'])
                 )
 
         await ctx.send(embed=embed)
