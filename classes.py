@@ -54,4 +54,4 @@ class Member:
     def get_rank(self, guild: Guild):
         self = asdict(self)
         leaderboard = guild.get_leaderboard()
-        return (leaderboard.index(self) + 1) if self in guild.get_leaderboard() else 0
+        return (leaderboard.index(self) + 1) if self['score'] > 0 else 0

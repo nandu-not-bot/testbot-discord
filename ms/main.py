@@ -298,7 +298,7 @@ class Cog(commands.Cog):
 
     # Deduct
     @commands.command(aliases=["take"])
-    @commands.has_permission(administrator=True)
+    @commands.has_permissions(administrator=True)
     async def deduct(self, ctx: Context, mention = None):
         """Deducts points from a member."""
 
