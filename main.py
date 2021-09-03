@@ -25,7 +25,7 @@ initial_extensions = [
     # 'ttt.main', 
     # 'ask.ask', 
     # 'suggestion_react.react'
-    # 'help', 
+    'help', 
     ]
 
 intents = discord.Intents.default()
