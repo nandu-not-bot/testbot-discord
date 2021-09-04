@@ -411,6 +411,13 @@ class Cog(commands.Cog):
         
         self.dump(guild)
 
+    @pointcap.error
+    async def pc_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("❌ You do not have the clearance level to use this command.")
+        else:
+            raise error
+
     @commands.command(aliases=["sc"])
     @commands.has_permissions(administrator=True)
     async def setcap(self, ctx: Context, cap=None):

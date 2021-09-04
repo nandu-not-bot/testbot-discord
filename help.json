@@ -28,7 +28,9 @@
             "exc",
             "inc",
             "channels",
-            "take"
+            "take",
+            "pointcap",
+            "setcap"
         ],
         "✨ Misc": [
             "coolbot"
@@ -368,6 +370,48 @@
             "help": "Takes points from mentioned user. (needs admin perms)",
             "aliases": [
                 "deduct"
+            ]
+        },
+        "pointcap": {
+            "syntax": "",
+            "help": "Turns on or off point cap [points per minute]. (needs admin perms)",
+            "aliases": [
+                "pc", "togglecap", "cap"
+            ]
+        },
+        "pc": {
+            "syntax": "",
+            "help": "Turns on or off point cap [points per minute]. (needs admin perms)",
+            "aliases": [
+                "pointcap", "togglecap", "cap"
+            ]
+        },
+        "togglecap":{
+            "syntax": "",
+            "help": "Turns on or off point cap [points per minute]. (needs admin perms)",
+            "aliases": [
+                "pc", "pointcap", "cap"
+            ]
+        },
+        "cap":{
+            "syntax": "",
+            "help": "Turns on or off point cap [points per minute]. (needs admin perms)",
+            "aliases": [
+                "pc", "togglecap", "pointcap"
+            ]
+        },
+        "sc":{
+            "syntax": "<points>",
+            "help": "Sets point cap [points per minute]. (needs admin perms)",
+            "aliases": [
+                "setcap"
+            ]
+        },
+        "setcap":{
+            "syntax": "<points>",
+            "help": "Sets Point cap [points per minute]. (needs admin perms)",
+            "aliases": [
+                "sc"
             ]
         },
         "coolbot": {
