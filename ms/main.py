@@ -6,7 +6,7 @@ from discord.ext import commands, tasks
 from discord.ext.commands.context import Context
 
 from classes import Guild, Member
-from embeds import MessagingScoreEmbeds, GeneralEmbeds
+from embeds import MessagingScoreEmbeds
 
 
 class Cog(commands.Cog):
@@ -78,8 +78,9 @@ class Cog(commands.Cog):
             return Guild(id)
 
     def get_member(self, guild: Guild, id: int, display_name: str) -> Member:
+        id = str()
         for member in guild.members:
-            if guild.members[member]["id"] == id:
+            if member == id:
                 member = Member(**guild.members[member])
                 member.display_name = display_name
                 return member
@@ -115,19 +116,24 @@ class Cog(commands.Cog):
             )
 
     # POINT CAP LOOP
-    @tasks.loop(minutes=1)
-    def reset_temp_score(self):
+    @tasks.loop(seconds=60)
+    async def reset_temp_score(self):
+        print('resetting')
         for guild in db:
-            guild = Guild(guild)
+            guild = self.get_guild(guild)
 
             if not guild.point_cap_on:
                 continue
 
             for member in guild.members:
-                member = Member(member)
-                member.temp_score
+                member = self.get_member(guild, member, guild.members[member]['display_name'])
+                member.temp_score = 0
 
                 self.dump(guild, member)
+
+    @commands.Cog.listener(name='on_ready')
+    async def start_loop(self):
+        await self.reset_temp_score.start()
 
     # COMMANDS
 
@@ -142,14 +148,19 @@ class Cog(commands.Cog):
         guild = self.get_guild(message.guild.id)
         member = self.get_member(guild, message.author.id, message.author.display_name)
 
+
         if message.channel.id in guild.excluded_channels:
             return
 
         if member.temp_score >= guild.point_cap and guild.point_cap_on:
+            print(f'{member.display_name} - Score : {member.score} temp_score : {member.temp_score}')
+
             return
 
         member.score += 1
         member.temp_score += 1 if guild.point_cap_on else 0
+
+        print(f'{member.display_name} - Score : {member.score} temp_score : {member.temp_score}')
 
         self.dump(guild, member)
 
@@ -397,14 +408,8 @@ class Cog(commands.Cog):
         await ctx.send(
             f'✅ Point cap of `{guild.point_cap}` has been toggled {"**ON**" if guild.point_cap_on else "**OFF**"} for this server.'
         )
+        
         self.dump(guild)
-
-    @pointcap.error
-    async def deduct_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("❌ You do not have the clearance level to use this command.")
-        else:
-            raise error
 
     @commands.command(aliases=["sc"])
     @commands.has_permissions(administrator=True)
@@ -434,7 +439,7 @@ class Cog(commands.Cog):
         await ctx.send(f"✅ Point cap of this server has been set to `{cap}`.")
 
     @setcap.error
-    async def deduct_error(self, ctx, error):
+    async def sc_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("❌ You do not have the clearance level to use this command.")
         else:

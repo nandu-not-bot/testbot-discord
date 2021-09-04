@@ -62,11 +62,6 @@ async def on_ready():
 # Calls keep_alive function to keep the bot alive. Obviously.
 keep_alive()
 
-from replit import db
-for guild in db:
-    db[guild]['point_cap_on'] = False
-    db[guild]['point_cap'] = 10
-
 # Runs the bot instance
 bot.run(
     os.environ[
