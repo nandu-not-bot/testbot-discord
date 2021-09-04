@@ -2,7 +2,7 @@ from dataclasses import asdict
 
 import discord
 from replit import db
-from discord.ext import commands
+from discord.ext import commands, tasks
 from discord.ext.commands.context import Context
 
 from classes import Guild, Member

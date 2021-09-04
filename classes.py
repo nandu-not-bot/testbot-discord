@@ -40,6 +40,8 @@ class Member:
     # For messaging scores
     display_name: str
     score: int = field(default=0, compare=False)
+    can_score: bool = True
+    last_scored: tuple = field(default=(0, 0))
 
     # For Games
     is_playing: bool = False
