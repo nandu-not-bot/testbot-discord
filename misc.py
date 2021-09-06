@@ -23,7 +23,7 @@ class MiscCommands(commands.Cog):
         feedback = ''.join(f'{word} ' for word in feedback)
 
         await dev.send(f'{ctx.author.mention} says: ' + feedback)
-        await ctx.reply('Team Chitti thanks you for your valuable feedback! 😄')
+        await ctx.reply('Team Chitti thanks you for your valuable feedback! 😄', delete_after=30)
 
 def setup(bot):
     bot.add_cog(MiscCommands(bot))
