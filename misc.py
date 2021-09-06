@@ -16,13 +16,14 @@ class MiscCommands(commands.Cog):
         '''Get feedback from the users'''
 
         if len(feedback) == 0:
-            ctx.send("❌ Oops! I think you forgot to give your feedback!", delete_after=5)
+            await ctx.send("❌ Oops! I think you forgot to give your feedback!", delete_after=5)
             return
     
         dev = self.bot.get_user(591078175778537512)
-        feedback = f'{ctx.author.mention} says: '.join(f'{word} ' for word in feedback)
+        feedback = ''.join(f'{word} ' for word in feedback)
 
-        dev.send(feedback)
+        await dev.send(f'{ctx.author.mention} says: ' + feedback)
+        await ctx.reply('Team Chitti thanks you for your valuable feedback! 😄')
 
 def setup(bot):
     bot.add_cog(MiscCommands(bot))
