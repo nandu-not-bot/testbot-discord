@@ -33,7 +33,8 @@
             "setcap"
         ],
         "✨ Misc": [
-            "coolbot"
+            "coolbot",
+            "feedback"
         ]
     },
     "commands": {
@@ -418,6 +419,11 @@
             "syntax": "",
             "help": "Just try it out.",
             "aliases": []
+        },
+        "feedback": {
+            "syntax": "<feedback>",
+            "help" : "Give feedback on bugs and new features you'd like to see, or just a good review! :)",
+            "aliases" : []
         }
     }
 }
