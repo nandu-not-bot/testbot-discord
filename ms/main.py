@@ -118,7 +118,7 @@ class Cog(commands.Cog):
     # POINT CAP LOOP
     @tasks.loop(seconds=60)
     async def reset_temp_score(self):
-        print('resetting')
+        print("resetting")
         for guild in db:
             guild = self.get_guild(guild)
 
@@ -126,12 +126,14 @@ class Cog(commands.Cog):
                 continue
 
             for member in guild.members:
-                member = self.get_member(guild, member, guild.members[member]['display_name'])
+                member = self.get_member(
+                    guild, member, guild.members[member]["display_name"]
+                )
                 member.temp_score = 0
 
                 self.dump(guild, member)
 
-    @commands.Cog.listener(name='on_ready')
+    @commands.Cog.listener(name="on_ready")
     async def start_loop(self):
         await self.reset_temp_score.start()
 
@@ -148,19 +150,22 @@ class Cog(commands.Cog):
         guild = self.get_guild(message.guild.id)
         member = self.get_member(guild, message.author.id, message.author.display_name)
 
-
         if message.channel.id in guild.excluded_channels:
             return
 
         if member.temp_score >= guild.point_cap and guild.point_cap_on:
-            print(f'{member.display_name} - Score : {member.score} temp_score : {member.temp_score}')
+            print(
+                f"{member.display_name} - Score : {member.score} temp_score : {member.temp_score}"
+            )
 
             return
 
         member.score += 1
         member.temp_score += 1 if guild.point_cap_on else 0
 
-        print(f'{member.display_name} - Score : {member.score} temp_score : {member.temp_score}')
+        print(
+            f"{member.display_name} - Score : {member.score} temp_score : {member.temp_score}"
+        )
 
         self.dump(guild, member)
 
@@ -169,12 +174,22 @@ class Cog(commands.Cog):
     async def score(self, ctx: Context, mention: str = None):
         """Shows score of user if mentioned else shows score of invoker."""
 
-        if mention is None or self.find_member(ctx, mention) is None:
-            member = self.get_member(
-                self.get_guild(ctx.guild.id), ctx.author.id, ctx.author.display_name
-            )
+        try:
+            mention = int(mention)
+        except:
+            if mention is None or self.find_member(ctx, mention) is None:
+                member = self.get_member(
+                    self.get_guild(ctx.guild.id), ctx.author.id, ctx.author.display_name
+                )
+            else:
+                member = self.find_member(ctx, mention)
         else:
-            member = self.find_member(ctx, mention)
+            guild = self.get_guild(ctx.guild.id)
+            member = self.get_member(
+                guild,
+                guild.get_leaderboard()[mention + 1]["id"],
+                guild.get_leaderboard()[mention + 1]["display_name"],
+            )
 
         pfp_url = member.get_avatar_url(self.bot, self.get_guild(ctx.guild.id))
 
@@ -408,7 +423,7 @@ class Cog(commands.Cog):
         await ctx.send(
             f'✅ Point cap of `{guild.point_cap}` has been toggled {"**ON**" if guild.point_cap_on else "**OFF**"} for this server.'
         )
-        
+
         self.dump(guild)
 
     @pointcap.error
