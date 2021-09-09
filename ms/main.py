@@ -78,7 +78,7 @@ class Cog(commands.Cog):
             return Guild(id)
 
     def get_member(self, guild: Guild, id: int, display_name: str) -> Member:
-        id = str()
+        id = str(id)
         for member in guild.members:
             if member == id:
                 member = Member(**guild.members[member])
@@ -118,7 +118,6 @@ class Cog(commands.Cog):
     # POINT CAP LOOP
     @tasks.loop(seconds=60)
     async def reset_temp_score(self):
-        print("resetting")
         for guild in db:
             guild = self.get_guild(guild)
 
@@ -154,19 +153,10 @@ class Cog(commands.Cog):
             return
 
         if member.temp_score >= guild.point_cap and guild.point_cap_on:
-            print(
-                f"{member.display_name} - Score : {member.score} temp_score : {member.temp_score}"
-            )
-
             return
 
         member.score += 1
         member.temp_score += 1 if guild.point_cap_on else 0
-
-        print(
-            f"{member.display_name} - Score : {member.score} temp_score : {member.temp_score}"
-        )
-
         self.dump(guild, member)
 
     # Score
@@ -174,22 +164,12 @@ class Cog(commands.Cog):
     async def score(self, ctx: Context, mention: str = None):
         """Shows score of user if mentioned else shows score of invoker."""
 
-        try:
-            mention = int(mention)
-        except:
-            if mention is None or self.find_member(ctx, mention) is None:
-                member = self.get_member(
-                    self.get_guild(ctx.guild.id), ctx.author.id, ctx.author.display_name
-                )
-            else:
-                member = self.find_member(ctx, mention)
-        else:
-            guild = self.get_guild(ctx.guild.id)
+        if mention is None or self.find_member(ctx, mention) is None:
             member = self.get_member(
-                guild,
-                guild.get_leaderboard()[mention + 1]["id"],
-                guild.get_leaderboard()[mention + 1]["display_name"],
+                self.get_guild(ctx.guild.id), ctx.author.id, ctx.author.display_name
             )
+        else:
+            member = self.find_member(ctx, mention)
 
         pfp_url = member.get_avatar_url(self.bot, self.get_guild(ctx.guild.id))
 
