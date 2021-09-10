@@ -21,7 +21,7 @@ initial_extensions = [
     "misc",
     "rps.main",
     "ttt.main",
-    "cc.main",
+    # "cc.main",
     "mth.main",
     "ms.main",
     "ask.ask",
