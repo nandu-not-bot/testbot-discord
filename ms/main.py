@@ -73,6 +73,17 @@ class Cog(commands.Cog):
         else:
             return Guild(id)
 
+    # def get_member(self, guild: Guild, id: int, display_name: str) -> Member:
+    #     id = str(id)
+    #     for member in guild.members:
+    #         if member == id:
+    #             member = Member(**guild.members[member])
+    #             member.display_name = display_name
+    #             return member
+
+    #     self.dump(guild, Member(id, display_name))
+    #     return Member(id, display_name)
+
     # Dump guild and member
     @staticmethod
     def dump(guild: Guild, member: Member = None):
@@ -80,6 +91,25 @@ class Cog(commands.Cog):
             guild.members[str(member.id)] = asdict(member)
 
         db[str(guild.id)] = asdict(guild)
+
+    # Get member from mention
+    # def find_member(self, ctx: Context, mention: str):
+    #     member_id = self.decode_mention(mention)
+    #     try:
+    #         member_id = int(member_id)
+    #     except:
+    #         return
+
+    #     guild = self.get_guild(ctx.guild.id)
+    #     if (
+    #         ctx.guild.get_member(member_id) is None
+    #         or ctx.guild.get_member(member_id).bot
+    #     ):
+    #         return
+    #     else:
+    #         return self.get_member(
+    #             guild, member_id, ctx.guild.get_member(member_id).display_name
+    #         )
 
     # POINT CAP LOOP
     @tasks.loop(seconds=60)
@@ -140,11 +170,14 @@ class Cog(commands.Cog):
         else:
             member = guild.get_member(self.decode_mention(mention))
 
-        pfp_url = member.avatar_url(self.bot)
+        pfp_url = guild.get_avatar_url(self.bot, member.id)
 
         await ctx.reply(
             embed=MessagingScoreEmbeds.Score.show_score(
-                member.display_name, pfp_url, member.score, guild.get_rank(member.id)
+                member.display_name,
+                pfp_url,
+                member.score,
+                guild.get_rank(member.id)
             ),
             mention_author=False,
         )
@@ -329,6 +362,40 @@ class Cog(commands.Cog):
             "message",
             check=lambda m: m.author == ctx.author and m.content.lower() in ["y", "n"],
         )
+
+        # guild = self.get_guild(ctx.guild.id)
+
+        # if mention is None:
+        #     await ctx.send(f"Mention the member you would like to points points from.")
+        #     mention = await self.bot.wait_for("message")
+        #     mention = mention.content
+
+        # if ctx.guild.get_member(self.decode_mention(mention)) is None:
+        #     await ctx.send(f"❌ Member {mention} not found!")
+        #     return
+
+        # member = guild.get_member(
+        #     ctx.guild.get_member(self.decode_mention(mention)).id
+        # )
+
+        # while True:
+        #     await ctx.send(
+        #         f"How many points would you like to deduct from {member.mention}?"
+        #     )
+        #     points = await self.bot.wait_for("message")
+        #     try:
+        #         points = int(points.content)
+        #         break
+        #     except:
+        #         await ctx.send("")
+
+        # def yn_check(m):
+        #     return m.author == ctx.author and m.content.lower() in ["y", "n"]
+
+        # await ctx.send(
+        #     f":interrobang: Are you sure you want to deduce `{points}` points from {member.mention}? (y/n)"
+        # )
+        # response = await self.bot.wait_for("message", check=yn_check)
 
         if response.content.lower() == "n":
             await response.reply("❌ Command cancelled.")
