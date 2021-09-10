@@ -139,7 +139,7 @@ class Cog(commands.Cog):
             lb = guild.get_leaderboard()
             if rank > len(lb):
                 await ctx.send(
-                    discord.Embed(
+                    embed=discord.Embed(
                         title="Huh...?", description="❌ Invalid Rank!", color=0xFF0000
                     )
                 )
