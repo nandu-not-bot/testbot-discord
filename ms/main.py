@@ -126,19 +126,36 @@ class Cog(commands.Cog):
 
     # Score
     @commands.command(aliases=["s", "rank"])
-    async def score(self, ctx: Context, mention: str = None):
+    async def score(self, ctx: Context, member: str = None):
         """Shows score of user if mentioned else shows score of invoker."""
 
         guild = self.get_guild(ctx.guild.id)
 
-        if (
-            mention is None
-            or guild.get_member(self.decode_mention(mention), bot=self.bot) is None
-        ):
-            member = guild.get_member(ctx.author.id, ctx.author.display_name)
-
+        try:
+            rank = int(member)
+        except Exception:
+            pass
         else:
-            member = guild.get_member(self.decode_mention(mention))
+            lb = guild.get_leaderboard()
+            if rank > len(lb):
+                await ctx.send(
+                    discord.Embed(
+                        title="Huh...?", description="❌ Invalid Rank!", color=0xFF0000
+                    )
+                )
+                return
+
+            member = lb[rank - 1]
+
+        if not isinstance(member, Member):
+            if (
+                member is None
+                or guild.get_member(self.decode_mention(member), bot=self.bot) is None
+            ):
+                member = guild.get_member(ctx.author.id, ctx.author.display_name)
+
+            else:
+                member = guild.get_member(self.decode_mention(member))
 
         pfp_url = guild.get_avatar_url(self.bot, member.id)
 
