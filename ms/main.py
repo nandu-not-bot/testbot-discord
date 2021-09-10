@@ -177,7 +177,7 @@ class Cog(commands.Cog):
                 member.display_name,
                 pfp_url,
                 member.score,
-                member.get_rank(self.get_guild(ctx.guild.id)),
+                guild.get_rank(member.id)
             ),
             mention_author=False,
         )

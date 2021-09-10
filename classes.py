@@ -53,7 +53,7 @@ class Guild:
             ) 
             or member.bot  # Member is a bot
         ):
-            return None
+            pass
 
         if str(id) not in self.members:
             member = Member(id, display_name=display_name)
@@ -74,7 +74,7 @@ class Guild:
         leaderboard = [
             Member(**self.members[member])
             for member in sorted_members
-            if member["score"] > 0
+            if self.members[member]["score"] > 0
         ]
 
         if page is None:
@@ -82,7 +82,7 @@ class Guild:
 
         page -= 1
         leaderboard = [
-            Member(**member) for member in leaderboard if member["score"] > 0
+            member for member in leaderboard if member.score > 0
         ]
 
         return leaderboard[page * 10 : page * 10 + 10], math.ceil(len(leaderboard) / 10)
