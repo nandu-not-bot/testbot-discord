@@ -20,14 +20,6 @@ class Member:
     def mention(self):
         return f"<@{self.id}>"
 
-    # def get_avatar_url(self, bot, guild):
-    #     return bot.get_guild(guild.id).get_member(self.id).avatar_url
-
-    # def get_rank(self, guild: Guild):
-    #     self = asdict(self)
-    #     leaderboard = guild.get_leaderboard()
-    #     return (leaderboard.index(self) + 1) if self["score"] > 0 else 0
-
 
 @dataclass
 class Guild:
@@ -50,7 +42,7 @@ class Guild:
             not bot  # Bot is not given
             or not (
                 member := bot.get_guild(self.id).get_member(id)  # Member does not exist
-            ) 
+            )
             or member.bot  # Member is a bot
         ):
             pass
@@ -81,9 +73,7 @@ class Guild:
             return leaderboard
 
         page -= 1
-        leaderboard = [
-            member for member in leaderboard if member.score > 0
-        ]
+        leaderboard = [member for member in leaderboard if member.score > 0]
 
         return leaderboard[page * 10 : page * 10 + 10], math.ceil(len(leaderboard) / 10)
 
