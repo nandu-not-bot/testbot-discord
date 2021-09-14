@@ -34,7 +34,7 @@ class Cog(commands.Cog):
             embed=discord.Embed(
                 title=f"{lang}!",
                 description=f"I'm `{int(certainity)}%` sure that `{text}` is in {lang}.",
-                color=0x00ff00,
+                color=0xFF0000,
             )
         )
 
@@ -46,8 +46,21 @@ class Cog(commands.Cog):
         langs = [f"`{lang}`, " for lang in LANGUAGES]
 
         await ctx.send(
-            embed=discord.Embed(title="Language Codes", description="".join(lang for lang in langs)[:-2])
+            embed=discord.Embed(title="Language Codes", description="".join(*langs)[-2])
         )
+
+    @commands.command()
+    async def langname(self, ctx: Context, langcode:str=None):
+    
+        '''$langname <langcode>'''
+    
+        if langcode is None or langcode.lower() not in LANGUAGES:
+            await ctx.send(f"❌ Please enter a valid language code! Use `{ctx.prefix}langlist` to see all codes.")
+            return
+
+        lang = LANGUAGES[langcode.lower()]
+
+        await ctx.send(f"`{langcode}` stands for `{lang.title()}`.")
 
 
 def setup(bot):
