@@ -40,16 +40,14 @@ class Cog(commands.Cog):
 
     @commands.command()
     async def langlist(self, ctx: Context):
-    
-        '''$langlist [langcode]'''
-    
-        langs = [f'`{lang}`, ' for lang in LANGUAGES]
 
-        await ctx.send(embed=discord.Embed(
-            title = 'Language Codes',
-            description = ''.join(*langs)[-2]
-        ))
-    
+        """$langlist [langcode]"""
+
+        langs = [f"`{lang}`, " for lang in LANGUAGES]
+
+        await ctx.send(
+            embed=discord.Embed(title="Language Codes", description="".join(*langs)[-2])
+        )
 
 
 def setup(bot):
