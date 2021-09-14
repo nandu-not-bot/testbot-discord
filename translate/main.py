@@ -35,7 +35,7 @@ class Cog(commands.Cog):
             embed=discord.Embed(
                 title=f"{lang}!",
                 description=f"I'm `{int(certainity)}%` sure that `{text}` is in {lang}.",
-                color=0xFF0000,
+                color=0x00FF00,
             )
         )
 
@@ -47,7 +47,7 @@ class Cog(commands.Cog):
         langs = [f"`{lang} - {LANGUAGES[lang]}`, " for lang in LANGUAGES]
 
         await ctx.send(
-            embed=discord.Embed(title="Language Codes", description="".join(*langs)[-2])
+            embed=discord.Embed(title="Language Codes", description="".join(langs)[:-2])
         )
 
     @commands.command()
