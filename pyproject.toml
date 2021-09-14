@@ -10,7 +10,6 @@ discord = "^1.7.3"
 python-dotenv = "^0.19.0"
 Flask = "^2.0.1"
 replit = "^3.2.4"
-mechanize = "^0.4.6"
 
 [tool.poetry.dev-dependencies]
 

@@ -8,7 +8,7 @@ from keep_alive import keep_alive  # To keep the bot alive and not shut down.
 # Function that recognizes and returns prefixes when metioned by a user.
 def get_prefix(bot, message):
     # All the prefixes recognized by Chitti.
-    prefixes = ["do ", "$", "chitti ", "."]
+    prefixes = ["do ", "$", "chitti "]
 
     if not message.guild:
         return "$"
@@ -21,7 +21,7 @@ initial_extensions = [
     "misc",
     "rps.main",
     "ttt.main",
-    # "cc.main",
+    "cc.main",
     "mth.main",
     "ms.main",
     "ask.ask",
