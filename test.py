@@ -1,7 +1,5 @@
-from googletrans import Translator
+from googletrans import Translator, LANGCODES
 
 detector = Translator()
 
-dec_lan = detector.translate('Hello World!', dest="ja")
-
-print(dec_lan.text)
+print(LANGCODES)
