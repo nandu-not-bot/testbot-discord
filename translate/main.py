@@ -29,12 +29,23 @@ class Cog(commands.Cog):
 
         result = translator.detect(text)
 
-        lang, certainity = LANGUAGES[result.lang].title(), result.confidence * 100
+        lang = LANGUAGES[result.lang]
+        certainity  = result.confidence
+
+        
+
+        if isinstance(lang, list):
+            chance = f"I'm `{int(certainity[0])}%` sure that `{text}` is in {lang[0].title()}"
+            for l, i in enumerate(lang[1:]):
+                chance += f" and `{certainity[i]}%` in `{l.title()}`"
+
+        else:
+            chance = f"I'm `{int(certainity)}%` sure that `{text}` is in {lang.title()}."
 
         await ctx.send(
             embed=discord.Embed(
                 title=f"{lang}!",
-                description=f"I'm `{int(certainity)}%` sure that `{text}` is in {lang}.",
+                description=chance,
                 color=0x00FF00,
             )
         )
