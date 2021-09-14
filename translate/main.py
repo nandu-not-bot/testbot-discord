@@ -35,16 +35,16 @@ class Cog(commands.Cog):
         
 
         if isinstance(lang, list):
-            chance = f"I'm `{int(certainity[0])}%` sure that `{text}` is in {LANGUAGES[lang[0]].title()}"
-            for l, i in enumerate(lang[1:]):
-                chance += f" and `{certainity[i]}%` in `{LANGUAGES[l].title()}`"
+            chance = f"I'm `{int(certainity[0]*100)}%` sure that `{text}` is in {LANGUAGES[lang[0]].title()}"
+            for i, l in enumerate(lang[1:]):
+                chance += f" and `{int(certainity[i+1]*100)}%` in {LANGUAGES[l].title()}"
 
         else:
-            chance = f"I'm `{int(certainity)}%` sure that `{text}` is in {lang.title()}."
+            chance = f"I'm `{int(certainity*100)}%` sure that `{text}` is in {LANGUAGES[lang].title()}."
 
         await ctx.send(
             embed=discord.Embed(
-                title=f"{lang}!",
+                title=f"Aha!",
                 description=chance,
                 color=0x00FF00,
             )
@@ -66,6 +66,10 @@ class Cog(commands.Cog):
 
         '''$translate <text> [?language code]'''
 
+        if len(args) < 1:
+            await ctx.send(f"❌ Please enter a valid language code and use '?'.\n***Eg:** `{ctx.prefix}translate Random text ?ja`")
+            return
+
         if args[-1][0] != '?':
             langcode = 'en'
             text_ = ''.join(args)
@@ -73,8 +77,8 @@ class Cog(commands.Cog):
             langcode = args[-1][1:].lower()
             text_ = ''.join(args[:-1])
 
-        if text_ < 0 or langcode not in LANGUAGES:
-            await ctx.send(f"❌ Please enter a valid language code and use '?'.\n***Eg:** `{ctx.prefix}translate Random text ?ja`")
+        if len(text_) < 0 or langcode not in LANGUAGES:
+            await ctx.send(f"❌ Please enter a valid language code and use '?'.\n**Eg:** `{ctx.prefix}translate Random text ?ja`")
             return
 
         translator = Translator()
@@ -107,7 +111,7 @@ class Cog(commands.Cog):
             value=f"`{pronounciation}`"
         )
 
-        await ctx.send()
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Cog(bot))
