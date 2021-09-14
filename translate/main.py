@@ -72,7 +72,8 @@ class Cog(commands.Cog):
         translation, src, dest, pronounciation = result.text, result.src, result.dest, result.pronunciation
 
         embed = discord.Embed(
-            title = "FOUND IT!"
+            title = "FOUND IT!",
+            color = 0x00ff00
         )
         embed.add_field(
             name="Original text",
