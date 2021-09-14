@@ -29,15 +29,15 @@ class Cog(commands.Cog):
 
         result = translator.detect(text)
 
-        lang = LANGUAGES[result.lang]
+        lang = result.lang
         certainity  = result.confidence
 
         
 
         if isinstance(lang, list):
-            chance = f"I'm `{int(certainity[0])}%` sure that `{text}` is in {lang[0].title()}"
+            chance = f"I'm `{int(certainity[0])}%` sure that `{text}` is in {LANGUAGES[lang[0]].title()}"
             for l, i in enumerate(lang[1:]):
-                chance += f" and `{certainity[i]}%` in `{l.title()}`"
+                chance += f" and `{certainity[i]}%` in `{LANGUAGES[l].title()}`"
 
         else:
             chance = f"I'm `{int(certainity)}%` sure that `{text}` is in {lang.title()}."
