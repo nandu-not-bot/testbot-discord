@@ -2,4 +2,4 @@ from googletrans import Translator, LANGCODES
 
 detector = Translator()
 
-print(LANGCODES)
+print(detector.translate("hello world", "ja"))
