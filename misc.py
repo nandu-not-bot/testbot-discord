@@ -5,8 +5,7 @@ class MiscCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @staticmethod
-    def get_kwargs(func: callable):
+    def get_kwargs(self, func: callable):
         async def wrapper(*args):
             string = " ".join(args)
             await func(string)
