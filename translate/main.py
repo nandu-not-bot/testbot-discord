@@ -4,7 +4,6 @@ from discord.ext import commands
 from discord.ext.commands.context import Context
 from googletrans import Translator, LANGUAGES
 
-
 class Cog(commands.Cog):
 
     """Translate Cog"""
@@ -32,8 +31,6 @@ class Cog(commands.Cog):
         lang = result.lang
         certainity  = result.confidence
 
-        
-
         if isinstance(lang, list):
             chance = f"I'm `{int(certainity[0]*100)}%` sure that `{text}` is in {LANGUAGES[lang[0]].title()}"
             for i, l in enumerate(lang[1:]):
@@ -43,11 +40,7 @@ class Cog(commands.Cog):
             chance = f"I'm `{int(certainity*100)}%` sure that `{text}` is in {LANGUAGES[lang].title()}."
 
         await ctx.send(
-            embed=discord.Embed(
-                title=f"Aha!",
-                description=chance,
-                color=0x00FF00,
-            )
+            embed=discord.Embed(title='Aha!', description=chance, color=0x00FF00)
         )
 
     @commands.command(aliases=['langs'])

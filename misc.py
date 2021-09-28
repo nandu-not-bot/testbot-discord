@@ -34,7 +34,10 @@ class MiscCommands(commands.Cog):
         '''Ping latency'''
     
         await ctx.send(f'I am speed! `{round(self.bot.latency*1000, 1)} ms`')
-    
+
+    @commands.command()
+    async def echo(self, ctx, string):
+        await ctx.send(string)
 
 
 def setup(bot):
