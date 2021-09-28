@@ -2,8 +2,12 @@ from discord.ext import commands
 
 def get_kwargs(func: callable):
     async def wrapper(self, ctx, *args):
+        # $command -a arg -b arg -c arg
         string = " ".join(args)
-        await func(self, ctx, string)
+        args = string.split("-")
+
+        kwargs = {arg[0]: arg[1:] for arg in args}
+        await func(self, ctx, kwargs)
 
     return wrapper
 
@@ -43,9 +47,9 @@ class MiscCommands(commands.Cog):
 
     @commands.command(name="echo")
     @get_kwargs
-    async def echo(self, ctx, string):
-        await ctx.send(string)
-
+    async def echo(self, ctx, kwargs: dict):
+        display = "".join(f'{arg}: {value}' for arg, value in kwargs.items())
+        await ctx.send(display)
 
 def setup(bot):
     bot.add_cog(MiscCommands(bot))
