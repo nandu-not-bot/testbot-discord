@@ -1,9 +1,9 @@
 from discord.ext import commands
 
 def get_kwargs(func: callable):
-    async def wrapper(*args):
+    async def wrapper(self, ctx, *args):
         string = " ".join(args)
-        await func(string)
+        await func(self, ctx, string)
 
     return wrapper
 
@@ -41,7 +41,7 @@ class MiscCommands(commands.Cog):
     
         await ctx.send(f'I am speed! `{round(self.bot.latency*1000, 1)} ms`')
 
-    @commands.command()
+    @commands.command(name="echo")
     @get_kwargs
     async def echo(self, ctx, string):
         await ctx.send(string)
