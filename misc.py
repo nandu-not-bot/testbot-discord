@@ -1,16 +1,15 @@
 from discord.ext import commands
 
+def get_kwargs(func: callable):
+    async def wrapper(*args):
+        string = " ".join(args)
+        await func(string)
+
+    return wrapper
 
 class MiscCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
-    def get_kwargs(self, func: callable):
-        async def wrapper(*args):
-            string = " ".join(args)
-            await func(string)
-
-        return wrapper
 
     @commands.command(name="coolbot")
     async def coolbot(self, ctx):
